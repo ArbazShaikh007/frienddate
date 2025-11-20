@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{common_url}}{{url_for('static',filename='assets/images/fettle_logo.png')}}" />
+
+    {% if title %}
+    <title>Home - {{title}}</title>
+    {% else %}
+    <title>Home</title>
+    {% endif %}
+    <style>
+        .page-wrapper {
+            width: 210mm; /* A4 width */
+            height: 297mm; /* A4 height */
+            margin: 0 auto;
+            display: flex;
+            justify-content: center; /* Center content horizontally */
+
+            background-color: white;
+            border: 0.5px solid lightgray;
+            padding: 5%;
+        }
+        .content {
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            /* Styles for screens smaller than 768px (e.g., mobile devices) */
+            .page-wrapper {
+                width: 90%; /* Adjust the width for smaller screens */
+                height: auto; /* Allow height to expand as needed */
+            }
+            .content {
+                margin-top: 10px; /* Adjust margin for smaller screens */
+            }
+        }
+    </style>
+</head>
+<body style="background-color: #f5f7f9;">
+    <div class="page-wrapper">
+        <div class="card content">
+            <div class="card-body d-flex">
+                <script src="{{url_for('static', filename='assets/ckeditor/ckeditor.js')}}"></script>
+                <div class="content" id="editor">
+                    {{content.content | safe}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>CKEDITOR.replace('content')</script>
+</body>
+</html>
+
+
+
+
+<!--<body>-->
+<!--                <div class="card">-->
+
+<!--                <div class="card-body">-->
+
+<!--<div>{{ content.content|safe }}</div>-->
+
+<!--                </div>-->
+<!--                </div>-->
+
+
+
+
+<!--</body>-->

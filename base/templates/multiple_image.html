@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <p>
+        {% with messages = get_flashed_messages()%}
+        {% if messages %}
+        {%for message in messages%}
+        <div class="alert alert-success">
+            <strong>{{message}}</strong>
+            </div>
+            {%endfor%}
+            {%endif%}
+            {%endwith%}
+        </p>
+    </div>
+<form method="post" action="" enctype="multipart/form-data" class="form-inline">
+<div class="form-group">
+    <label>choose Image :</label>
+    <input type="file" name="files[]" id="fileInput" class="form-control" multiple>
+</div>
+<input type="submit" name="submit" class="btn btn-success" value="UPLOAD"/>
+</form>
+</div>
+</form>
+
+
+
+<script>
+    $(document).ready(function(){
+        $("#fileInput").change(function(){
+            var fileLength = this.files.length;
+            var match = ["image/jpeg","image/png","image/jpg","image/gif"];
+            var i;
+            for (i=0;i < fileLength ; i++){
+                var file = this.files[i];
+                var imagefile = file.type;
+                alert('Please select a valid image file (jpg / jpeg / png / GIF )');
+                $('#fileInput').val('');
+                return false;
+            }
+            
+        });
+    });
+</script>
+</body>
+</html>

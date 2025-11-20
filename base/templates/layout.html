@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg"
+      data-sidebar-image="none" data-preloader="disable">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Dashboard | Friend Date - Admin & Dashboard Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description"/>
+    <meta content="Themesbrand" name="author"/>
+<!-- gridjs css -->
+    <link rel="stylesheet" href="{{ common_path }}{{ url_for('static',filename='assets/libs/glightbox/css/glightbox.min.css') }}">
+    <link rel="stylesheet" href="{{ common_path }}{{ url_for('static',filename= 'assets/libs/gridjs/theme/mermaid.min.css') }}">
+    <link href="{{ common_path }}{{ url_for('static',filename='assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{{ common_path }}{{ url_for('static',filename='assets/css/table3d.css') }}" rel="stylesheet"
+          type="text/css"/>
+
+    <link href="{{ common_path }}{{ url_for('static',filename='assets/css/cardheading.css') }}" rel="stylesheet"
+          type="text/css"/>
+{#<link href="{{ url_for('static',filename='assets/css/sidebar.css') }}" rel="stylesheet"#}
+{#          type="text/css"/>#}
+
+
+{#        <link rel="stylesheet" href="{{ common_path }}{{ url_for('static',filename='assets/libs/dropzone/dropzone.css') }}" type="text/css"/>#}
+
+    <!-- Filepond css -->
+
+
+    <link rel="stylesheet"
+          href="{{ common_path }}{{ url_for('static',filename='assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.css') }}">
+
+
+{#    <link rel="shortcut icon" href="{{ url_for('static',filename='assets/images/favicon.ico') }}"/>#}
+        <link rel="shortcut icon" href="{{ common_path }}{{ url_for('static',filename='assets//images//app_icon0.png') }}"/>
+
+    <!-- jsvectormap css -->
+    <link href="{{ common_path }}{{ url_for('static',filename='assets/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet"
+          type="text/css"/>
+
+    <!--Swiper slider css-->
+    <link href="{{ common_path }}{{ url_for('static',filename='assets/libs/swiper/swiper-bundle.min.css') }}" rel="stylesheet"
+          type="text/css" />
+    <link rel="stylesheet" href="{{ common_path }}{{ url_for('static',filename='assets/libs/filepond/filepond.min.css') }}"
+          type="text/css" />
+
+
+    <!-- Layout config Js -->
+    <script src="{{ common_path }}{{ url_for('static',filename='assets/js/layout.js') }}"></script>
+    <!-- Bootstrap Css -->
+    <link href="{{ common_path }}{{ url_for('static',filename='assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css"/>
+    <!-- Icons Css -->
+    <link href="{{ common_path }}{{ url_for('static',filename='assets/css/icons.min.css') }}" rel="stylesheet" type="text/css"/>
+    <!-- App Css-->
+    <link href="{{ common_path }}{{ url_for('static',filename='assets/css/app.min.css') }}" rel="stylesheet" type="text/css"/>
+    <!-- custom Css-->
+    <link href="{{ common_path }}{{ url_for('static',filename='assets/css/custom.min.css') }}" rel="stylesheet" type="text/css"/>
+
+    <style>
+        @keyframes fade-out {
+            from {
+                visibility: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+
+            100% {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+        }
+
+        .fade-out {
+            animation-name: fade-out;
+        }
+
+        .animated {
+            animation-duration: 7s;
+            animation-fill-mode: both;
+        }
+    </style>
+</head>
+
+
+<body>
+
+<!-- Begin page -->
+<div id="layout-wrapper">
+    <header id="page-topbar">
+        <div class="layout-width">
+            <div class="navbar-header">
+                <div class="d-flex">
+                    <!-- LOGO -->
+
+                    <div class="navbar-brand-box horizontal-logo">
+
+                        <a href="{{ url_for('admin_auth_v4.index') }}" class="logo logo-dark">
+                            {#                                <span class="logo-sm">#}
+                            {#                                    <img src="{{url_for('static',filename='assets//images//logo-sm.png')}}" alt=""#}
+                            {#                                        height="22" />#}
+                            {#                                </span>#}
+                            {#                                <span class="logo-lg">#}
+                            {#                                    <img src="{{url_for('static',filename='assets//images//logo-dark.png')}}" alt=""#}
+                            {#                                        height="17" />#}
+                            {#                                </span></a>#}
+                            {##}
+                            {#                            <a href="index.html" class="logo logo-light">#}
+                            {#                                <span class="logo-sm">#}
+                            {#                                    <img src="{{url_for('static',filename='assets//images//logo-sm.png')}}" alt=""#}
+                            {#                                        height="22" />#}
+                            {#                                </span>#}
+                            {#                                <span class="logo-lg">#}
+                            {#                                    <img src="{{url_for('static',filename='assets/images/logo-light.png')}}" alt=""#}
+                            {#                                        height="17" />#}
+                            {#                                </span>#}
+                        </a>
+                    </div>
+
+
+                    <button type="button"
+                            class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger"
+                            id="topnav-hamburger-icon">
+                            <span class="hamburger-icon">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </span>
+                    </button>
+
+
+                    <!-- App Search-->
+                    <form class="app-search d-none d-md-block">
+
+                        <div class="dropdown-menu dropdown-menu-lg" id="search-dropdown">
+                            <div data-simplebar style="max-height: 320px">
+                                <!-- item-->
+                                <div class="dropdown-header">
+                                    <h6 class="text-overflow text-muted mb-0 text-uppercase">
+                                        Recent Searches
+                                    </h6>
+                                </div>
+
+                                <div class="dropdown-item bg-transparent text-wrap">
+                                    <a href="index.html" class="btn btn-soft-secondary btn-sm btn-rounded">how to
+                                        setup <i class="mdi mdi-magnify ms-1"></i></a>
+                                    <a href="index.html" class="btn btn-soft-secondary btn-sm btn-rounded">buttons
+                                        <i class="mdi mdi-magnify ms-1"></i></a>
+                                </div>
+                                <!-- item-->
+                                <div class="dropdown-header mt-2">
+                                    <h6 class="text-overflow text-muted mb-1 text-uppercase">
+                                        Pages
+                                    </h6>
+                                </div>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="ri-bubble-chart-line align-middle fs-18 text-muted me-2"></i>
+                                    <span>Analytics Dashboard</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="ri-lifebuoy-line align-middle fs-18 text-muted me-2"></i>
+                                    <span>Help Center</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="ri-user-settings-line align-middle fs-18 text-muted me-2"></i>
+                                    <span>My account settings</span>
+                                </a>
+
+                                <!-- item-->
+                                <div class="dropdown-header mt-2">
+                                    <h6 class="text-overflow text-muted mb-2 text-uppercase">
+                                        Members
+                                    </h6>
+                                </div>
+
+                                <div class="notification-list">
+                                    <!-- item -->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
+                                        <div class="d-flex">
+                                            <img src="assets/images/users/avatar-2.jpg"
+                                                 class="me-3 rounded-circle avatar-xs" alt="user-pic"/>
+                                            <div class="flex-1">
+                                                <h6 class="m-0">Angela Bernier</h6>
+                                                <span class="fs-11 mb-0 text-muted">Manager</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <!-- item -->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
+                                        <div class="d-flex">
+                                            <img src="assets/images/users/avatar-3.jpg"
+                                                 class="me-3 rounded-circle avatar-xs" alt="user-pic"/>
+                                            <div class="flex-1">
+                                                <h6 class="m-0">David Grasso</h6>
+                                                <span class="fs-11 mb-0 text-muted">Web Designer</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <!-- item -->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
+                                        <div class="d-flex">
+                                            <img src="assets/images/users/avatar-5.jpg"
+                                                 class="me-3 rounded-circle avatar-xs" alt="user-pic"/>
+                                            <div class="flex-1">
+                                                <h6 class="m-0">Mike Bunch</h6>
+                                                <span class="fs-11 mb-0 text-muted">React Developer</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="text-center pt-3 pb-1">
+                                <a href="pages-search-results.html" class="btn btn-primary btn-sm">View All Results
+                                    <i class="ri-arrow-right-line ms-1"></i></a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="d-flex align-items-center">
+
+
+
+                    <div class="dropdown ms-sm-3  topbar-user">
+                        <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                <span class="d-flex align-items-center">
+                                    <img class="rounded-circle header-profile-user"
+                                         src="{{ data.image_path }}"
+                                         alt="Header Avatar"/>
+                                    <span class="text-start ms-xl-2">
+                                        <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ current_user.fname }}
+                                            {{ current_user.lname }}</span>
+                                        </span>
+                                </span>
+                        </button>
+
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <!-- item-->
+                            <h6 class="dropdown-header">Welcome {{ data['fullname'] }}!</h6>
+                            <a class="dropdown-item" href="{{ url_for('admin_auth_v4.admin_profile') }}"><i
+
+                                    class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
+                                <span class="align-middle">Profile</span></a>
+                            <a class="dropdown-item" href="{{ url_for('admin_auth_v4.admin_login') }}">
+                                <i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
+                                <span class="align-middle">Logout</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </header>
+
+    <!-- ========== App Menu ========== -->
+    <div class="app-menu navbar-menu">
+        <!-- LOGO -->
+        <div class="navbar-brand-box">
+            <!-- Dark Logo-->
+            <a href="{{ url_for('admin_auth_v4.index') }}" class="logo logo-dark">
+                                    <span class="logo-sm">
+                                        <img src="{{ common_path }}{{ url_for('static',filename='assets/images/app_icon0.png') }}" alt=""
+                                             />
+                                    </span>
+                <span class="logo-lg">
+                                        <img src="{{ common_path }}{{ url_for('static',filename='assets/images/app_icon0.png') }}" alt=""
+                                            />
+                                    </span>
+            </a>
+            <!-- Light Logo-->
+            <a href="{{ url_for('admin_auth_v4.index') }}" class="logo logo-light">
+                                    <span class="logo-sm">
+                                        <img src="{{ common_path }}{{ url_for('static',filename='assets/images/app_icon0.png') }}" alt=""
+                                             height="22"/>
+                                    </span>
+                <span class="logo-lg">
+                        <img src="{{ common_path }}{{ url_for('static',filename='assets/images/new6.png') }}" alt=""/>
+                    </span>
+            </a>
+            <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
+                    id="vertical-hover">
+                <i class="ri-record-circle-line"></i>
+            </button>
+        </div>
+
+
+        <div id="scrollbar">
+            <div class="container-fluid">
+
+                <div id="two-column-menu"></div>
+                <ul class="navbar-nav" id="navbar-nav">
+                    <li class="menu-title"><span data-key="t-menu">Menu</span></li>
+                    <li class="nav-item">
+
+                        <a class="nav-link menu-link {% if page=='index' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_auth_v4.index') }}" role="button"
+                           aria-expanded="false">
+                            <i class="ri-dashboard-2-line"></i>
+                            <span data-key="t-dashboards">Dashboards</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {% if page=='category' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_auth_v4.add_category') }}" role="button"
+                           aria-expanded="false">
+                            <i class="ri-image-add-fill"></i>
+                            <span data-key="t-dashboards">Add Places Category</span>
+                        </a>
+                    </li>
+                <li class="nav-item">
+                        <a class="nav-link menu-link {% if page=='things' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_views_v5.add_things_category') }}" role="button"
+                           aria-expanded="false">
+                            <i class="ri-image-add-fill"></i>
+                            <span data-key="t-dashboards">Add Things Category</span>
+                        </a>
+                    </li>
+
+                <li class="nav-item">
+                        <a class="nav-link menu-link {% if page=='buttons' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_views_v5.add_buttons') }}" role="button"
+                           aria-expanded="false">
+                            <i class="ri-image-add-fill"></i>
+                            <span data-key="t-dashboards">Add Buttons</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {% if page=='question' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_views_v5.add_questions_category') }}" role="button"
+                           aria-expanded="false">
+                            <i class="ri-image-add-fill"></i>
+                            <span data-key="t-dashboards">Add Questions Category</span>
+                        </a>
+                    </li>
+
+                  <li class="nav-item">
+                        <a class="nav-link menu-link {% if page=='blocked_word' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_auth_v4.blocked_words') }}" role="button"
+                           aria-expanded="false">
+                            <i class="ri-article-line"></i>
+                            <span data-key="t-dashboards">Add Block Words</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {% if page=='add_badge' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_auth_v4.add_badges') }}" role="button"
+                           aria-expanded="false">
+                            <i class="ri-article-line"></i>
+                            <span data-key="t-dashboards">Add Badges</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {% if page=='add_buddy' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_auth_v4.add_buddys') }}" role="button"
+                           aria-expanded="false">
+                            <i class="ri-article-line"></i>
+                            <span data-key="t-dashboards">Add Buddys Types</span>
+                        </a>
+                    </li>
+
+
+
+
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {% if page=='news' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_auth_v4.add_news') }}" role="button"
+                           aria-expanded="false">
+                            <i class="ri-article-line"></i>
+                            <span data-key="t-dashboards">Add News</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {% if page=='view_users' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_views_v5.view_users') }}" role="button"
+                           aria-expanded="false">
+                            <i class="ri-user-2-line"></i>
+
+                            <span data-key="t-dashboards">Total Users</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {% if page=='view_featured_list' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_views_v5.view_featured_list') }}" role="button"
+                           aria-expanded="false">
+                            <i class="ri-user-2-line"></i>
+
+                            <span data-key="t-dashboards">Featured List</span>
+                        </a>
+                    </li>
+
+                <li class="nav-item">
+                        <a class="nav-link menu-link {% if page=='view_business_list' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_views_v5.view_business_list') }}" role="button"
+                           aria-expanded="false">
+                            <i class="ri-user-2-line"></i>
+
+                            <span data-key="t-dashboards">Business Profile List</span>
+                        </a>
+                    </li>
+
+                
+                <li class="nav-item">
+                        <a class="nav-link menu-link {% if page=='reported_posts' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_views_v5.reported_post') }}" role="button"
+                           aria-expanded="false">
+                            <i class="ri-user-2-line"></i>
+
+                            <span data-key="t-dashboards">Reported Post</span>
+                        </a>
+                    </li>
+                
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {% if page=='deleted' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_views_v5.deleted_user') }}" role="button"
+                           aria-expanded="false">
+                            <i class="las la-user-slash"></i>
+                            <span data-key="t-dashboards">Deleted User Info</span>
+                        </a>
+                    </li>
+
+{#                <li class="nav-item">#}
+{#                        <a class="nav-link menu-link {% if page=='report' %}#}
+{#                                active#}
+{#                            {% endif %}" href="{{ url_for('admin_views_v5.view_reports') }}" role="button"#}
+{#                           aria-expanded="false">#}
+{#                            <i class=" las la-file-alt"></i>#}
+{#                            <span data-key="t-dashboards">Reported User Info</span>#}
+{#                        </a>#}
+{#                    </li>#}
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button"
+                           aria-expanded="false" aria-controls="sidebarAuth">
+                            <i class="ri-file-list-3-line"></i> <span data-key="t-CMS">Pages</span>
+                        </a>
+                        <div class="menu-dropdown collapse  {% if page=='terms' or page == 'privacy' or page == 'faq' or page == 'app_use' or page == 'info' or page=='store' or page=='brand'%}
+                                active show
+                            {% endif %}" id="sidebarAuth" style="">
+                            <ul class="nav nav-sm flex-column">
+                               <li class="nav-item">
+                                    <a class="nav-link menu-link {% if page=='app_use' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_views_v5.how_to_use_app') }}" role="button"
+                                       aria-expanded="false">
+                                        <i class="las la-edit"></i>
+                                        <span data-key="t-terms" style="display:flex">How To Use Friend Date</span>
+                                    </a>
+                                </li>
+
+
+                            <li class="nav-item">
+                                    <a class="nav-link menu-link {% if page=='info' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_views_v5.information') }}" role="button"
+                                       aria-expanded="false">
+                                        <i class="las la-edit"></i>
+                                        <span data-key="t-terms" style="display:flex">Information</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link {% if page=='terms' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_views_v5.terms_conditions') }}" role="button"
+                                       aria-expanded="false">
+                                        <i class="las la-edit"></i>
+                                        <span data-key="t-terms" style="display:flex">Terms & Conditions</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link {% if page=='privacy' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_views_v5.privacy_policies') }}" role="button"
+                                       aria-expanded="false">
+                                        <i class="las la-edit"></i>
+                                        <span data-key="t-privacy" style="display:flex">Privacy Policy</span>
+                                    </a>
+                                </li>
+                              <li class="nav-item">
+                                    <a class="nav-link menu-link {% if page=='store' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_views_v5.store') }}" role="button"
+                                       aria-expanded="false">
+                                        <i class="las la-edit"></i>
+                                        <span data-key="t-privacy" style="display:flex">Store</span>
+                                    </a>
+                                </li>
+                              <li class="nav-item">
+                                    <a class="nav-link menu-link {% if page=='brand' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_views_v5.brand_deals') }}" role="button"
+                                       aria-expanded="false">
+                                        <i class="las la-edit"></i>
+                                        <span data-key="t-privacy" style="display:flex">Brand Deals</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link {% if page=='faq' %}
+                                active
+                            {% endif %}" href="{{ url_for('admin_views_v5.add_faq') }}" role="button"
+                                       aria-expanded="false">
+                                        <i class="las la-edit"></i>
+                                        <span data-key="t-privacy" style="display:flex">FAQs</span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                    </li>
+
+
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="collapse menu-dropdown" id="sidebarAdvanceUI">
+            <ul class="nav nav-sm flex-column">
+
+                </li>
+            </ul>
+        </div>
+        </li>
+    </div>
+    <!-- Vertical Overlay-->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category,message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show">
+                                <label>{{ message }}</label>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                <br>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+            {% block content %} {% endblock %}
+
+            <!-- JAVASCRIPT -->
+         <script src="{{ common_path }}{{ url_for('static',filename='assets/libs/glightbox/js/glightbox.min.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/libs/isotope-layout/isotope.pkgd.min.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/js/pages/gallery.init.js') }}"></script>
+
+
+            <script
+                    src="{{ common_path }}{{ url_for('static',filename='assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/libs/simplebar/simplebar.min.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/libs/node-waves/waves.min.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/libs/feather-icons/feather.min.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/js/plugins.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/libs/flatpicker/flatpickr.min.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/libs/choices/choices.min.js') }}"></script>
+            <!-- apexcharts -->
+            <script src="{{ url_for('static',filename='assets/libs/apexcharts/apexcharts.min.js') }}"></script>
+
+            <!-- Vector map-->
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/libs/jsvectormap/js/jsvectormap.min.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/libs/jsvectormap/maps/world-merc.js') }}"></script>
+
+            <!--Swiper slider js-->
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/libs/swiper/swiper-bundle.min.js') }}"></script>
+
+            <!-- Dashboard init -->
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/js/pages/dashboard-ecommerce.init.js') }}"></script>
+
+            <!-- profile init js -->
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/js/pages/profile.init.js') }}"></script>
+
+
+            <!-- profile-setting init js -->
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/js/pages/profile-setting.init.js') }}"></script>
+
+            <!-- App js -->
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/js/app.js') }}"></script>
+            <script src=â€https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.jsâ€></script>
+
+
+            <script src="{{ common_path }}{{ url_for('static',filename ='assets/libs/list.pagination.js/list.pagination.min.js') }}"></script>
+
+            <script src="{{ common_path }}{{ url_for('static',filename ='assets/libs/prismjs/prism.js') }}"></script>
+
+            <script src="{{ common_path }}{{ url_for('static',filename ='assets/libs/list.js/list.min.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename ='assets/js/pages/listjs.init.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename ='assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+
+            <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+            <script src="{{ common_path }}{{ url_for('static',filename ='assets/js/pages/gridjs.init.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename ='assets/libs/gridjs/gridjs.umd.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename ='assets/js/pages/job-grid-list.init') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename ='assets/js/pages/job-candidate-grid.init') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename ='assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename ='assets/libs/flatpickr/flatpickr.min.js') }}"></script>
+
+            {#            <script src="{{ url_for('static',filename='assets/libs/dropzone/dropzone-min.js') }}"></script>#}
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/libs/filepond/filepond.min.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/libs/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/libs/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/libs/filepond-plugin-file-encode/filepond-plugin-file-encode.min.js') }}"></script>
+            <script src="{{ common_path }}{{ url_for('static',filename='assets/js/pages/form-file-upload.init.js') }}"></script>
+{#                    <script src="{{ url_for('static',filename='assets/js/sidebar.js') }}"></script>#}
+
+</body>
+
+</html>

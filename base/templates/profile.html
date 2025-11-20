@@ -1,0 +1,94 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+
+
+    <div class="container-fluid">
+
+        <div class="profile-foreground position-relative mx-n4 mt-n4">
+            <div class="profile-wid-bg">
+                <img src="{{ common_path }}{{ url_for('static',filename='assets/images/profile_7.jpg') }}" alt=""
+                     class="profile-wid-img"/>
+            </div>
+        </div>
+        <div class="pt-4 mb-4 mb-lg-3 pb-lg-4">
+            <div class="row g-4">
+                <div class="col-auto">
+                    <div class="avatar-lg">
+                        <img src="{{ data['image_path'] }}" alt="user-img"
+                             class="img-thumbnail rounded-circle"/>
+                    </div>
+                </div>
+                <!--end col-->
+                <div class="col">
+                    <div class="p-2">
+                        <h3 class="text-white mb-1">{{ data['fullname'] }}</h3>
+                        <p class="text-white-75">Owner & Founder</p>
+
+                    </div>
+                </div>
+
+
+            </div>
+            <!--end row-->
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div>
+                    <div class="d-flex">
+                        <!-- Nav tabs -->
+
+                        <div class="flex-shrink-0">
+                            <a href="{{ url_for('admin_auth_v2.admin_update') }}" class="btn btn-primary " style="background-color: #E74F5C;"><i
+                                    class="ri-edit-box-line align-bottom"></i> Edit Profile</a>
+                        </div>
+                    </div>
+                    <!-- Tab panes -->
+                    <div class="tab-content pt-12 text-muted">
+                        <div class="row">
+                            <div class="col-xxl-12">
+                                <br><br><br><br><br><br><br>
+                                <div class="card" >
+                                    <div class="card-body" >
+                                        <h5 class="card-title mb-3 ps-3">Info: </h5>
+                                        <div class="table-responsive" >
+                                            <table  class="table table-borderless mb-0">
+                                                <tbody >
+                                                <tr >
+                                                    <th class="ps-3" scope="row">Full Name :</th>
+                                                    <td class="text-muted">{{ data['fullname'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="ps-3" scope="row">Mobile :</th>
+                                                    <td class="text-muted">{{ data['phonenumber'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="ps-3" scope="row">E-mail :</th>
+                                                    <td class="text-muted">{{ data['email'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="ps-3" scope="row">Phone Number :</th>
+                                                    <td class="text-muted">{{ data['phonenumber'] }}
+                                                    </td>
+                                                </tr>
+{#                                                <tr>#}
+{#                                                    <th class="ps-0" scope="row">Joining Date</th>#}
+{#                                                    <td class="text-muted">24 Nov 2021</td>#}
+{#                                                </tr>#}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div><!-- end card body -->
+                                </div><!-- end card -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

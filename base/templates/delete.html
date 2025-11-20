@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>   
+    {% for i in post %}
+    
+        <div class="container-fluid">
+            
+            <label>Post Title :{{i.post_title}} </label>
+            {% set image_list = i.image.split(',') %}
+            {%for j in image_list %}
+                    <img src="{{url_for('static',filename=i.image_path+j)}}" alt="pic" height="200px" width="300" >
+                    <form method="post" action="{{url_for('update',post_id=i.id)}}">
+            
+                        <button type="submit" class="btn btn-success">Edit</button>
+                    </form>
+                        <form method="post" action="{{url_for('delete',post_id=i.id)}}">
+                         <button type="submit" class="btn btn-success">Delete</button> 
+                    </form>
+                    
+            {% endfor %}
+
+        </div>
+        {% endfor %}
+</body>
+</html>

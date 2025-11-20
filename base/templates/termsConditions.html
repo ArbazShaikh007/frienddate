@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block content%}
+<div class="card" >
+    <div class="card-body">
+
+        <script
+            src="{{common_path}}{{url_for('static',filename='assets/ckeditor/ckeditor.js')}}"></script>
+        <form method="POST">
+
+            <div class="form-group" >
+                <label class="form-label"><h3> Terms & Conditions</h3> </label>
+                <div class="form-control" >
+                    <textarea  name="body" id="editor" rows="9" cols="20"
+                        class="form-control">{{content.content}}</textarea>
+                </div>
+                <br>
+                <input type="submit" name="submit" class="btn btn-success"
+                    value="UPLOAD"/>
+                <a href="{{ url_for('admin_auth_v2.view_terms') }}" style="height: 37px" class="btn btn-outline-danger">View
+                <i data-feather="eye"></i></a>
+            </div>
+
+            </form>
+    </div>
+        </div>
+
+<script>
+    CKEDITOR.replace('body')</script>
+
+{% endblock content%}

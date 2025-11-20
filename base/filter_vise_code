@@ -1,0 +1,87 @@
+@user_view.route("/matches/category_vise",methods=['GET','POST'])
+@token_required
+def matches_category_vice(active_user):
+    user_id = request.args.get('id')
+    filter_text = request.args.get('filter_text')
+
+    active_saved = SavedCommunity.query.filter_by(user_id=active_user.id).all()
+    user_saved = SavedCommunity.query.filter_by(user_id=user_id).all()
+
+    saved = list(set(active_saved + user_saved))
+    ls1 = []
+
+    for m in saved:
+        community = CreatedCommunity.query.filter_by(id=m.created_id, user_id=user_id).first()
+        community_save = SavedCommunity.query.filter_by(created_id=m.created_id, user_id=user_id).first()
+
+        if community:
+            ls1.append(community)
+        if community_save:
+            ls1.append(community_save)
+
+    cat_list = Category.query.filter(Category.id.in_([c.category_id for c in ls1])).all()
+    dict_list = []
+    res = []
+    [res.append(x) for x in ls1 if x not in res]
+
+    if not filter_text:
+
+        for category in cat_list:
+            community_list = [c.as_dict() for c in res if c.category_id == category.id]
+            dict = {
+                'category_name': category.category_name,
+                'community_count': len(community_list),
+                'community_list':  sorted(community_list, key=lambda d: d['community_name'])
+            }
+            dict_list.append(dict)
+
+        return jsonify({'status': 1, 'data': dict_list, 'filter' : '0'})
+
+    if filter_text == '0':
+
+        for category in cat_list:
+            community_list = [c.as_dict() for c in res if c.category_id == category.id]
+            dict = {
+                'category_name': category.category_name,
+                'community_count': len(community_list),
+                'community_list':  sorted(community_list, key=lambda d: d['community_name'])
+            }
+            dict_list.append(dict)
+
+        return jsonify({'status': 1, 'data': dict_list, 'filter' : '0'})
+
+    if filter_text == '1':
+        for category in cat_list:
+            community_list = [c.as_dict() for c in res if c.category_id == category.id]
+            dict = {
+                'category_name': category.category_name,
+                'community_count': len(community_list),
+                'community_list':  sorted(community_list, key=lambda d: d['community_name'], reverse=True)
+            }
+            dict_list.append(dict)
+
+        return jsonify({'status': 1, 'data': dict_list, 'filter' : '1'})
+
+    if filter_text == '2':
+        for category in cat_list:
+            community_list = [c.as_dict() for c in res if c.category_id == category.id]
+            dict = {
+                    'category_name': category.category_name,
+                    'community_count': len(community_list),
+                    'community_list': sorted(community_list, key=lambda d: d['created_time'], reverse=True)
+                }
+            dict_list.append(dict)
+
+        return jsonify({'status': 1, 'data': dict_list, 'filter' : '2'})
+
+    if filter_text == '3':
+        for category in cat_list:
+            community_list = [c.as_dict() for c in res if c.category_id == category.id]
+            dict = {
+                    'category_name': category.category_name,
+                    'community_count': len(community_list),
+                    'community_list': sorted(community_list, key=lambda d: d['created_time'])
+                }
+            dict_list.append(dict)
+
+        return jsonify({'status': 1, 'data': dict_list, 'filter' : '3'})

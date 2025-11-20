@@ -1,0 +1,54 @@
+@user_view_v4.route('/top_followed_users', methods=['POST'])
+@token_required
+def get_top_followed_users(active_user):
+    page = int(request.json.get('page', 1))  # Default to page 1 if not specified
+    per_page = 10  # Number of items per page
+
+    top_users = db.session.query(
+        User,  # Select the User object
+        db.func.count(Follow.to_id).label('follower_count')
+    ).join(User, User.id == Follow.to_id  # Join Follow with User on to_id
+           ).group_by(User.id  # Group by User ID
+                      ).order_by(db.desc('follower_count')  # Order by follower count
+                                 ).paginate(page=page, per_page=per_page, error_out=False)  # Limit to top 100
+
+    has_next = top_users.has_next  # Check if there is a next page
+    total_pages = top_users.pages  # Total number of pages
+
+    main_list = []
+
+    if page >= 10:
+        has_next = False
+
+        main_list = []
+
+    else:
+        if top_users.items:
+            for user, count in top_users.items:
+
+                is_my_profile = False
+                if user.id == active_user.id:
+                    is_my_profile = True
+
+                user_data = {
+                    'user_id': user.id,
+                    'username': user.fullname,
+                    'user_image': user.image_path,
+                    'count': str(count),
+                    'is_my_profile': is_my_profile
+                }
+
+                main_list.append(user_data)
+
+
+
+    pagination_info = {
+        "current_page": page,
+        "has_next": has_next,
+        "per_page": per_page,
+        "total_pages": total_pages,
+    }
+
+    print('top_users',top_users)
+
+    return jsonify({'status': 1,'messege': 'Success','pagination_info': pagination_info,'user_list': main_list})

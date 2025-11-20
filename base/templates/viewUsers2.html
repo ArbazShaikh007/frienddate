@@ -1,0 +1,266 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">USERS LIST</h3>
+                </div>
+
+                <div class="card-body">
+                    <div id="customerList">
+                        <div class="row g-4 mb-3">
+
+                            <div class="col-sm">
+                                <div class="d-flex justify-content-sm-end">
+                                    <div class="search-box ms-2">
+                                        <input type="text" class="form-control search" placeholder="Search...">
+                                        <i class="ri-search-line search-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive table-card mt-3 mb-1">
+                            <table class="table align-middle table-nowrap" id="customerTable">
+                                <thead class="table-light">
+                                <tr>
+                                    <th class="sort align-center text-center" width="100px" data-sort="phone">
+                                        Sr No.
+                                    </th>
+                                    <th class="align-center text-center">Image</th>
+
+                                    <th class="sort align-center text-center" data-sort="customer_name">
+                                        Full Name
+                                    </th>
+                                    <th class="align-center text-center" data-sort="customer_name">
+                                        Badge
+                                    </th>
+
+                                    <th class="align-center text-center" data-sort="customer_name">Gender</th>
+                                    <th class="align-center text-center" data-sort="email ">Email</th>
+                                    <th class="align-center text-center" data-sort="phone ">Phone Number</th>
+                                    <th class="align-center text-center" data-sort="phone ">Created Time</th>
+
+                                    <th class="align-center text-center" data-sort="phone">Reports</th>
+
+                                    <th class="align-center text-center" data-sort="customer_name">Action</th>
+
+                                </tr>
+                                </thead>
+
+
+                                <tbody class="list form-check-all">
+
+                                {% for user, report in zip(user_data, reports) %}
+
+
+                                    <tr>
+                                        <td class="id " style="display:none;"><a href="javascript:void(0);"
+                                                                                 class="fw-medium link-primary">#VZ2101</a>
+                                        </td>
+                                        <td class="phone align-center text-center" width="100px">
+                                            {{ loop.index }}
+                                        </td>
+                                        <td class="d-flex justify-content-center">
+                                            <div class="avatar-group">
+                                                <div class="avatar-group-item"><a class="image-popup"
+                                                                                  href="
+                                                                                          {{ user.image_path }}"
+                                                                                  title="">
+                                                    <img src="
+                                                            {{ user.image_path }}"
+                                                         alt=""
+                                                         class="rounded-circle avatar-xs">
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        {% if user.badge_name == "I'll Buy Us Coffee" %}
+                                           {% set badge = '☕'  %}
+                                        {% elif user.badge_name == "I'll Buy Us Food" %}
+                                            {% set badge = '🍔'  %}
+                                        {% else %}
+                                         {% set badge = '-'  %}
+                                        {% endif %}
+                                        <td class="customer_name align-center text-center">{{ user.fullname }}</td>
+                                        <td class="customer_name align-center text-center">{{ badge }}</td>
+
+                                        <td class="customer_name align-center text-center">{{ user.gender }}</td>
+                                        <td class="email align-center text-center">{{ user.email }}</td>
+                                        <td class="phone align-center text-center">{{ user.phonenumber }}</td>
+
+
+                                        <td class="time align-center text-center">{{ user.created_time }}</td>
+                                        <td width="105px" class="phone align-center text-center notify">
+                                            {% if report == 0 %}
+                                                <a href="{{ url_for('admin_views_v5.view_users') }}" id="myAnchor"
+                                                   style="height: 37px; pointer-events: none; cursor: default;">
+                                                    <i data-feather="eye-off"></i>
+                                                </a>
+                                            {% endif %}
+                                            {% if report != 0 %}
+                                                <a href="{{ url_for('admin_views_v5.user_reports',id = user.id) }}"
+                                                   style="height: 37px;"> <i data-feather="eye"></i></a>{% endif %}
+                                            <div class="notification">{{ report }}</div>
+                                        </td>
+
+
+                                        <td colspan="2">
+                                            <div class="d-flex gap-2 d-flex justify-content-center">
+                                                <div class="remove">
+                                                    <button
+
+                                                            class="btn btn-outline-danger"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#blockModal{{ user.id }}"
+
+                                                    >
+                                                        {% if user.is_block == 0 %}BLOCK{% else %}UNBLOCK{% endif %}
+                                                    </button>
+
+
+                                                    {#                            <a  href="{{url_for('admin_views_v5.block_user',userId=user.id)}}" class="btn btn-outline-danger">{% if user.is_block == 0 %}BLOCK{% else %}UNBLOCK{% endif %}</a>#}
+                                                </div>
+
+
+                                                <div class="d-flex gap-2 d-flex justify-content-center">
+                                                <div class="remove">
+                                                    <a
+
+                                                            class="btn btn-outline-success" href="{{url_for('admin_views_v5.add_users_featured_page',user_id=user.id, page = 'user_list')}}"
+
+                                                    >
+                                                        {% if user.is_featured == 0 %}Add To Featured{% else %}Remove From Featured{% endif %}                                                     </a>
+
+
+                                                    {#                            <a  href="{{url_for('admin_views_v5.block_user',userId=user.id)}}" class="btn btn-outline-danger">{% if user.is_block == 0 %}BLOCK{% else %}UNBLOCK{% endif %}</a>#}
+                                                </div>
+                                                <div class="remove">
+                                                    <a
+
+                                                            class="btn btn-outline-success" href="{{url_for('admin_views_v5.add_users_featured_page',user_id=user.id, page = 'user_list')}}"
+
+                                                    >
+                                                        {% if user.is_business == 0 %}Add To Business{% else %}Remove From Business{% endif %}                                                     </a>
+
+
+                                                    {#                            <a  href="{{url_for('admin_views_v5.block_user',userId=user.id)}}" class="btn btn-outline-danger">{% if user.is_block == 0 %}BLOCK{% else %}UNBLOCK{% endif %}</a>#}
+                                                </div>
+                                            </div>
+                                        </td>
+
+
+
+                                    </tr>
+                                    <div class="modal fade zoomIn" id="blockModal{{ user.id }}"
+                                         tabindex="-1" aria-labelledby="exampleModalLabel"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal"
+                                                            aria-label="Close"
+                                                            id="btn-close"></button>
+                                                </div>
+                                                <form method="POST"
+                                                      action="{{ url_for('admin_views_v5.block_user',id=user.id) }}">
+
+                                                    <div class="modal-body">
+                                                        <div class="mt-2 text-center">
+                                                            <lord-icon
+                                                                    src="https://cdn.lordicon.com/tdrtiskw.json"
+                                                                    trigger="loop"
+                                                                    colors="primary:#f7b84b,secondary:#f06548"
+                                                                    style="width: 100px; height: 100px"></lord-icon>
+                                                            <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                                                                {#                                                                                        <h4>Are you Sure ?</h4>#}
+                                                                {% if user.is_block == 0 %}
+                                                                    <p class="text-muted mx-4 mb-0">
+                                                                        Are You Sure You Want
+                                                                    </p>
+                                                                    <p class="text-muted mx-4 mb-0">To Block
+                                                                        This User?</p>
+                                                                {% else %}
+                                                                    <p class="text-muted mx-4 mb-0">
+                                                                        You Want
+                                                                    </p>
+                                                                    <p class="text-muted mx-4 mb-0">To
+                                                                        Unblock This User?</p>{% endif %}
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div style="display:none;">
+                                                            <label for="status-field"
+                                                                   class="form-label">Status</label>
+                                                            <select class="form-control" data-trigger
+                                                                    name="status-field" id="status-field">
+                                                                <option value="">Status</option>
+                                                                <option value="Active">Active</option>
+                                                                <option value="Block">Block</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+                                                            <button type="button"
+                                                                    class="btn w-sm btn-light"
+                                                                    data-bs-dismiss="modal">
+                                                                Close
+                                                            </button>
+                                                            {% if user.is_block == 0 %}
+                                                                <button type="submit"
+                                                                        class="btn w-sm btn-danger"
+                                                                        id="delete-record">
+                                                                    Yes, Block It!
+                                                                </button>
+                                                            {% else %}
+                                                                <button type="submit"
+                                                                        class="btn w-sm btn-danger"
+                                                                        id="delete-record">
+                                                                    Yes, Unblock It!
+                                                                </button>{% endif %}
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="noresult" style="display: none">
+                                <div class="text-center">
+                                    <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop"
+                                               colors="primary:#121331,secondary:#08a88a"
+                                               style="width:75px;height:75px"></lord-icon>
+                                    <h5 class="mt-2">Sorry! No Result Found</h5>
+                                    <p class="text-muted mb-0">We've searched more than 150+ Orders We did not find any
+                                        orders for you search.</p>
+                                </div>
+
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <div class="pagination-wrap hstack gap-2">
+                                    <a class="page-item pagination-prev disabled" href="#">
+                                        Previous
+                                    </a>
+                                    <ul class="pagination listjs-pagination mb-0"></ul>
+                                    <a class="page-item pagination-next" href="#">
+                                        Next
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>document.getElementById("myAnchor").onclick = function () {
+        return false;
+    };</script>
+{% endblock content %}

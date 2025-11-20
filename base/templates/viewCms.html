@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block content%}
+
+<body>
+                <div class="card">
+
+                <div class="card-body">
+
+<div>{{ content.content|safe }}</div>
+
+                </div>
+                </div>
+                {% if page=='news' %}
+ <a href="{{ url_for('admin_auth_v2.add_news') }}" style="height: 37px" class="btn btn-outline-danger"><i class="ri-arrow-left-fill"></i>  Back To News
+                </a>{% endif %}
+{% if page=='privacy' %}
+ <a href="{{ url_for('admin_views_v2.privacy_policies') }}" style="height: 37px" class="btn btn-outline-danger"><i class="ri-arrow-left-fill"></i>  Back To Privacy Policy
+                </a>{% endif %}
+{% if page=='terms' %}
+
+ <a href="{{ url_for('admin_views_v2.terms_conditions') }}" style="height: 37px" class="btn btn-outline-danger"><i class="ri-arrow-left-fill"></i>  Back To Terms & Conditions
+                </a>{% endif %}
+{% if page=='app_use' %}
+
+ <a href="{{ url_for('admin_views_v2.how_to_use_app') }}" style="height: 37px" class="btn btn-outline-danger"><i class="ri-arrow-left-fill"></i>  Back To How To Use Friend Date
+                </a>{% endif %}
+
+{% if page=='info' %}
+
+ <a href="{{ url_for('admin_views_v2.information') }}" style="height: 37px" class="btn btn-outline-danger"><i class="ri-arrow-left-fill"></i>  Back To Information
+                </a>{% endif %}
+{% if page=='store' %}
+
+ <a href="{{ url_for('admin_views_v2.store') }}" style="height: 37px" class="btn btn-outline-danger"><i class="ri-arrow-left-fill"></i>  Back To Store
+                </a>{% endif %}
+  {% if page=='brand' %}
+
+ <a href="{{ url_for('admin_views_v2.brand_deals') }}" style="height: 37px" class="btn btn-outline-danger"><i class="ri-arrow-left-fill"></i>  Back To Brand Deals
+                </a>{% endif %}
+
+
+</body>
+{% endblock content%}

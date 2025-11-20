@@ -1,0 +1,139 @@
+@user_view_v2.route('/homepage_filter', methods=['GET', 'POST'])
+@token_required
+def homepage_filter(active_user):
+    if request.method == 'POST':
+        page = int(request.json.get('page', 1))  # Default to page 1 if not specified
+        per_page = 10  # Number of items per page
+
+        current_date = func.current_date()
+        blocked_user_ids = [block.user_id for block in Block.query.filter_by(blocked_user=active_user.id).all()]
+        blocked_by_user_ids = [block.blocked_user for block in Block.query.filter_by(user_id=active_user.id).all()]
+
+        relationships = request.json.get('relationships')
+        relationships_list = []
+        if relationships == 0:
+            relationships_list.append('Friends')
+
+        if relationships == 1:
+            relationships_list.append("Dating")
+        if relationships == 2:
+            relationships_list.extend(["Friends", "Dating"])
+
+        gender = request.json.get('gender')
+        gender_list = []
+        if gender == 0:
+            gender_list.append("Male")
+        if gender == 1:
+            gender_list.append("Female")
+        if gender == 2:
+            gender_list.append("Other")
+        if gender == 3:
+            gender_list.extend(['Male', 'Female'])
+
+        age_start = request.json.get('age_start')
+
+        age_end = request.json.get('age_end')
+
+        sexuality = request.json.get('sexuality')
+        if sexuality == 0:
+            sexuality = "Straight"
+        if sexuality == 1:
+            sexuality = "Biesexual"
+        if sexuality == 2:
+            sexuality = "Gay"
+        if sexuality == 3:
+            sexuality = "Other"
+        relationship_status = request.json.get('relationship_status')
+        if relationship_status == 0:
+            relationship_status = "Single"
+        if relationship_status == 1:
+            relationship_status = "In a Relationship"
+        if relationship_status == 2:
+            relationship_status = "Married"
+        if relationship_status == 3:
+            relationship_status = "Other"
+
+        country = request.json.get('country')
+        state = request.json.get('state')
+        city = request.json.get('city')
+
+        age_expression = func.timestampdiff(text('YEAR'), User.age, current_date)
+
+        active_user_saved_ids = [j.created_id for j in active_user.save_community_id]
+
+        # Subquery for match counts
+        matches_subq = (db.session.query(SavedCommunity.user_id, func.count().label('matches'))
+                        .filter(SavedCommunity.created_id.in_(active_user_saved_ids))
+                        .group_by(SavedCommunity.user_id)
+                        .subquery())
+
+        # Filters for age between age_start and age_end
+        age_filter = and_(age_expression >= age_start, age_expression <= age_end)
+        query = (db.session.query(User, matches_subq.c.matches).outerjoin(matches_subq,
+                                                                          User.id == matches_subq.c.user_id).filter(
+            age_filter, User.gender.in_(gender_list), User.sexuality == sexuality,
+            User.relationship_status == relationship_status,
+            User.looking_for.in_(relationships_list), User.id != active_user.id,
+            User.is_block != True, User.deleted != True,
+            User.id.not_in(blocked_user_ids),
+            User.id.not_in(blocked_by_user_ids)).order_by(matches_subq.c.matches.desc()))
+        if country:
+            query = query.filter(func.lower(User.country) == country.lower())
+        if state:
+            query = query.filter(func.lower(User.state) == state.lower())
+        if city:
+            query = query.filter(func.lower(User.city) == city.lower())
+
+        user_list = query.paginate(page=page, per_page=per_page, error_out=False)
+        has_next = user_list.has_next  # Check if there is a next page
+        total_pages = user_list.pages  # Total number of pages
+
+        # Pagination information
+        pagination_info = {
+            "current_page": page,
+            "has_next": has_next,
+            "per_page": per_page,
+            "total_pages": total_pages,
+        }
+
+        response_list = []
+        if user_list.items:
+            for specific_response, count in user_list.items:
+                count_value = str(count)
+                if not count:
+                    count_value = '0'
+                badge = ""
+                if specific_response.badge_name is not None:
+                    badge = specific_response.badge_name
+                response_dict = {'user_id': str(specific_response.id),
+                                 'user_name': specific_response.fullname,
+                                 'user_image': specific_response.image_path
+                    ,
+                                 'state': specific_response.state,
+                                 'city': specific_response.city,
+                                 'badge': badge,
+                                 'matches_count': count_value,
+                             'about_me': specific_response.about_me
+
+                                 }
+
+                response_list.append(response_dict)
+
+        if len(response_list) > 0:
+
+            return jsonify({'status': 1, 'data': response_list,
+                            'messege': '', 'pagination': pagination_info})
+        else:
+            return jsonify({'status': 1, 'data': [],
+                            'messege': 'You have zero matches. Click on Save to get started',
+                            })
+
+    filter_dict = {'relationships': 0,
+                   'gender': 0,
+                   'age_start': '18',
+                   'age_end': '40',
+                   'sexuality': 0,
+                   'relationship_status': 0}
+
+    return jsonify({'status': 1, 'is_subscription': active_user.is_subscription_badge, 'data': filter_dict,
+                    })

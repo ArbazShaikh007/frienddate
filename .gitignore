@@ -1,0 +1,6 @@
+migrations
+__pycache__
+*.pyc
+frienddate
+.env
+base/frienddate_key.json

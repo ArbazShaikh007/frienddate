@@ -1,0 +1,453 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="main-content  ms-0">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title mb-0">Add, Edit & Remove</h4>
+                        </div>
+                        <!-- end card header -->
+
+                        <div class="card-body">
+                            <div id="customerList">
+                                <div class="row g-4 mb-3">
+                                    <div class="col-sm-auto">
+                                        <div>
+                                            <button type="button" class="btn btn-success add-btn"
+                                                    data-bs-toggle="modal" id="create-btn"
+                                                    data-bs-target="#showModal">
+                                                <i class="ri-add-line align-bottom me-1"></i> Add
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm">
+                                        <div class="d-flex justify-content-sm-end">
+                                            <div class="search-box ms-2">
+                                                <input type="text" class="form-control search"
+                                                       placeholder="Search..."/>
+                                                <i class="ri-search-line search-icon"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive table-card mt-3 mb-1">
+
+                                    <table class="table align-middle table-nowrap" id="customerTable">
+                                        <thead class="table-light">
+                                        <tr>
+                                            <th class="align-center text-center" scope="col" data-sort="customer_name">
+                                                Sr No.
+                                            </th>
+
+                                            <th class="sort align-center text-center" data-sort="sr_no">
+                                                Category Name
+                                            </th>
+                                            <th class="sort align-center text-center" data-sort="email">Category Image
+                                            </th>
+
+                                            <th class="sort align-center text-center" data-sort="action">Action</th>
+                                        </tr>
+                                        </thead>
+
+                                        {% for i in  user_data %}
+
+                                            <tbody class="list form-check-all">
+
+                                            <tr>
+                                                <td class="align-center text-center" width="70px">{{ loop.index }}</td>
+
+
+                                                <td class="customer_name align-center text-center">{{ i['category_name'] }}</td>
+                                                <td class="email align-center text-center">
+                                                    <img
+                                                            src="{{ i['image_path'] }}{{ i['image_name'] }} "
+                                                            alt="user-img" width="130px"
+                                                            height=130px;
+                                                            style="border: 3.5px solid rgba(255,79,41,0.5)">
+                                                </td>
+
+                                                <td colspan="2">
+                                                    <div class="d-flex gap-2 d-flex justify-content-center">
+                                                        <div class="edit ">
+                                                            <button
+                                                                    class="btn btn-sm btn-success "
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#showModal1{{ i.id }}"
+
+
+                                                            >
+                                                                Edit
+                                                            </button>
+                                                        </div>
+                                                        <div class="remove">
+                                                            <button
+
+                                                                    class="btn btn-sm btn-danger remove-item-btn"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#deleteModal{{ i.id }}"
+
+                                                            >
+                                                                Remove
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="modal fade" id="deleteModal{{ i.id }}"
+                                                         tabindex="-1" aria-labelledby="exampleModalLabel"
+                                                         aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="btn-close"
+                                                                            data-bs-dismiss="modal"
+                                                                            aria-label="Close"
+                                                                            id="btn-close"></button>
+                                                                </div>
+                                                                <form method="POST"
+                                                                      action="{{ url_for('admin_auth.delete_category',id=i.id) }}">
+
+                                                                    <div class="modal-body">
+                                                                        <div class="mt-2 text-center">
+                                                                            <lord-icon
+                                                                                    src="https://cdn.lordicon.com/gsqxdxog.json"
+                                                                                    trigger="loop"
+                                                                                    colors="primary:#f7b84b,secondary:#f06548"
+                                                                                    style="width: 100px; height: 100px"></lord-icon>
+                                                                            <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                                                                                <h4>Are you Sure ?</h4>
+                                                                                <p class="text-muted mx-4 mb-0">
+                                                                                    Are you Sure You want
+                                                                                </p>
+                                                                                <p class="text-muted mx-4 mb-0">to
+                                                                                    Remove this Category?</p>
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+                                                                            <button type="button"
+                                                                                    class="btn w-sm btn-light"
+                                                                                    data-bs-dismiss="modal">
+                                                                                Close
+                                                                            </button>
+                                                                            <button type="submit"
+                                                                                    class="btn w-sm btn-danger"
+                                                                                    id="delete-record">
+                                                                                Yes, Delete It!
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="modal fade" id="showModal1{{ i.id }}" tabindex="-1"
+                                                         aria-labelledby="exampleModalLabel"
+                                                         aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header bg-light p-3">
+                                                                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                                                                    <button type="button" class="btn-close"
+                                                                            data-bs-dismiss="modal" aria-label="Close"
+                                                                            id="close-modal"></button>
+                                                                </div>
+                                                                <form action="{{ url_for('admin_auth.update_category') }}"
+                                                                      method="POST" enctype="multipart/form-data">
+                                                                    <div class="modal-body">
+
+                                                                        <div class="mb-3">
+                                                                            <label for="category" class="form-label">Update
+                                                                                Category</label
+                                                                            >
+                                                                            <input
+                                                                                    type="text"
+                                                                                    name="category"
+                                                                                    value="{{ i['category_name'] }}"
+                                                                                    id="category"
+                                                                                    class="form-control"
+                                                                                    placeholder="Enter Category Name"
+                                                                                    required
+                                                                            />
+                                                                        </div>
+
+                                                                        <div class="mb-3">
+                                                                            <label for="image-field" class="form-label"
+                                                                            >Category Image</label
+                                                                            >
+                                                                            <input
+                                                                                    type="file"
+                                                                                    name="categoryImage"
+                                                                                    value="{{ i['image_name'] }}"
+                                                                                    id="image-field"
+                                                                                    class="form-control"
+                                                                                    placeholder="Enter Email"
+
+                                                                            />
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <div class="hstack gap-2 justify-content-end">
+                                                                            <button
+                                                                                    type="button"
+                                                                                    class="btn btn-light"
+                                                                                    data-bs-dismiss="modal"
+                                                                                    value="submit"
+                                                                            >
+                                                                                Close
+                                                                            </button>
+                                                                            <button
+                                                                                    type="submit"
+                                                                                    class="btn btn-success"
+                                                                                    id="add-btn"
+                                                                                    value="submit"
+                                                                            >
+                                                                                Update
+                                                                            </button>
+                                                                            <input type="hidden" name="updateId"
+                                                                                   value="{{ i['id'] }}"/>
+
+
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </td>
+                                            </tr>
+
+
+                                            </tbody>
+
+
+                                        {% endfor %}
+
+                                    </table>
+
+                                </div>
+                            </div>
+
+                            <div class="noresult" style="display: none">
+                                <div class="text-center">
+                                    <lord-icon
+                                            src="https://cdn.lordicon.com/msoeawqm.json"
+                                            trigger="loop"
+                                            colors="primary:#121331,secondary:#08a88a"
+                                            style="width: 75px; height: 75px"
+                                    ></lord-icon>
+                                    <h5 class="mt-2">Sorry! No Result Found</h5>
+                                    <p class="text-muted mb-0">
+                                        We've searched more than 150+ Orders We did not
+                                        find any orders for you search.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <div class="pagination-wrap hstack gap-2">
+                                <a
+                                        class="page-item pagination-prev disabled"
+                                        href="#"
+                                >
+                                    Previous
+                                </a>
+                                <ul class="pagination listjs-pagination mb-0"></ul>
+                                <a class="page-item pagination-next" href="#">
+                                    Next
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {#            <div class="d-flex justify-content">#}
+                    {#                        <div class="d-flex justify-content-between me-4 ms-4"><p>#}
+                    {#                            Showing page {{ user_data.page }} of {{ user_data.pages }} &nbsp;&nbsp; </p>#}
+                    {#</div>#}
+                    {#            <div class="d-flex justify-content-end">#}
+                    {#                            <div class="pagination-wrap hstack gap-2">#}
+                    {##}
+                    {#                                {% if user_data.page == 1 %}#}
+                    {#                                    <a href="#"#}
+                    {#                                       class="page-item pagination-prev disabled">#}
+                    {#                                        Prev#}
+                    {#                                    </a>#}
+                    {#                                {% else %}#}
+                    {#                                    <a href="{{ url_for('admin_auth.add_category', page=user_data.prev_num) }}"#}
+                    {#                                       class="page-item pagination-prev">#}
+                    {#                                        Prev#}
+                    {#                                    </a>#}
+                    {#                                {% endif %}#}
+                    {##}
+                    {#                                <ul class="pagination listjs-pagination mb-0">#}
+                    {##}
+                    {#                                    {% for page_num in user_data.iter_pages(left_edge=1, right_edge=1, left_current=1,#}
+                    {#                            right_current=2) %}#}
+                    {#                                        {% if page_num %}#}
+                    {##}
+                    {#                                            {% if user_data.page == page_num %}#}
+                    {##}
+                    {##}
+                    {#                                                <li class="active"><a class="page"#}
+                    {#                                                                      href="{{ url_for('admin_auth.add_category',page=page_num) }}">#}
+                    {#                                                    {{ page_num }}#}
+                    {#                                                </a></li>#}
+                    {#                                            {% else %}#}
+                    {#                                                <li><a class="page"#}
+                    {#                                                       href="{{ url_for('admin_auth.add_category', page=page_num) }}">#}
+                    {#                                                    {{ page_num }}#}
+                    {#                                                </a></li>#}
+                    {#                                            {% endif %}#}
+                    {#                                        {% else %}#}
+                    {#                                            ...#}
+                    {#                                        {% endif %}#}
+                    {##}
+                    {##}
+                    {#                                    {% endfor %}#}
+                    {#                                </ul>#}
+                    {#                                {% if user_data.page == user_data.pages %}#}
+                    {#                                    <a href="#" class="page-item pagination-next disabled">Next</a>#}
+                    {#                                {% else %}#}
+                    {#                                    <a href="{{ url_for('admin_auth.add_category', page=user_data.next_num) }}"#}
+                    {#                                       class="page-item pagination-next">Next</a>#}
+                    {#                                {% endif %}#}
+                    {##}
+                    {#                            </div>#}
+                    {#                        </div>#}
+                </div>
+            </div>
+            <!-- end card -->
+        </div>
+        <!-- end col -->
+    </div>
+    <!-- end col -->
+    </div>
+
+
+    <div class="modal fade" id="showModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-light p-3">
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                            id="close-modal"></button>
+                </div>
+                <form action="{{ url_for('admin_auth.add_category') }}" method="POST" enctype="multipart/form-data">
+                    <div class="modal-body">
+
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Add Category</label
+                            >
+                            <input
+                                    type="text"
+                                    name="category"
+                                    id="category"
+                                    class="form-control"
+                                    placeholder="Enter Category Name"
+                                    required
+                            />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="image-field" class="form-label"
+                            >Category Image</label
+                            >
+                            <input
+                                    type="file"
+                                    name="categoryImage"
+                                    id="image-field"
+                                    class="form-control"
+                                    placeholder="Enter Email"
+                                    required
+                            />
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <div class="hstack gap-2 justify-content-end">
+                            <button
+                                    type="button"
+                                    class="btn btn-light"
+                                    data-bs-dismiss="modal"
+                                    value="submit"
+                            >
+                                Close
+                            </button>
+                            <button
+                                    type="submit"
+                                    class="btn btn-success"
+                                    id="add-btn"
+                                    value="submit"
+                            >
+                                Add Category
+                            </button>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    </div>
+    </div>
+
+
+
+
+
+
+
+    {#    <footer class="footer">#}
+    {#        <div class="container-fluid">#}
+    {#            <div class="row">#}
+    {#                <div class="col-sm-6">#}
+    {#                    <script>#}
+    {#                        document.write(new Date().getFullYear());#}
+    {#                    </script>#}
+    {#                    Â© Velzon.#}
+    {#                </div>#}
+    {#                <div class="col-sm-6">#}
+    {#                    <div class="text-sm-end d-none d-sm-block">#}
+    {#                        Design & Develop by Themesbrand#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </footer>#}
+
+
+    <!-- end main content-->
+    <!-- END layout-wrapper -->
+
+    <!--start back-to-top-->
+    <button
+            onclick="topFunction()"
+            class="btn btn-danger btn-icon"
+            id="back-to-top"
+    >
+        <i class="ri-arrow-up-line"></i>
+    </button>
+    <!--end back-to-top-->
+
+    <!--preloader-->
+    <div id="preloader">
+        <div id="status">
+            <div class="spinner-border text-primary avatar-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock content %}
