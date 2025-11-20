@@ -52,7 +52,7 @@ def push_notification(device_token, device_type, title, msg, image_url=None):
         print('Error sending message:', e)
 
 # def push_notification(device_token, device_type, title, msg, image_url=None):
-#     server_key = 'AAAAyJ_3rbE:APA91bGilZyHd3v6dlgOexbHt7aBtCm9apiLtLkfA44PfuF6VWENZo0ltxJMH0ExTRQrW4mxgW9_PWU4fW6NsDHiDZbsQaiQhWatNtfguXxeGBubTtBhiiUPbJ_wmajd05HTPQRhnCp-'
+#     server_key = ''
 #     fcm_endpoint = 'https://fcm.googleapis.com/fcm/send'
 #
 #     headers = {
