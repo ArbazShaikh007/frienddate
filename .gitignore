@@ -4,3 +4,4 @@ __pycache__
 frienddate
 .env
 base/frienddate_key.json
+.idea/
