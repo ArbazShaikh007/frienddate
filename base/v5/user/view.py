@@ -1,6 +1,6 @@
 from flask import request, jsonify, Blueprint
 from base.user.queryset import view_data
-from base.user.models import VisitGroupComments,GroupComments,GroupNotification,GroupPosts,GroupChatNotificationOnOff,UserPhotoComments,NewUserPostComments,MeetupRequest,Meetup,EventComments,IamGoing,Events,HideUser,FavoriteUser,ReportNewUserPosts,HideNewUserPosts,NewUserPosts,LikeNewUserPosts,NewGroup,JoinedNewGroup,ProfileReviewComments,FavoriteSubCategory,GroupChat,RecommendationComments,HideFeed,UserVideos,LikeUserVideos,ProfileReviewLike, LikeUserPhotos,UserPhotos, ProfileReviewRequest,token_required, FriendRequest, User, DateRequest, TagFriends, \
+from base.user.models import ReportMeetup,HideMeetup,VisitGroupComments,GroupComments,GroupNotification,GroupPosts,GroupChatNotificationOnOff,UserPhotoComments,NewUserPostComments,MeetupRequest,Meetup,EventComments,IamGoing,Events,HideUser,FavoriteUser,ReportNewUserPosts,HideNewUserPosts,NewUserPosts,LikeNewUserPosts,NewGroup,JoinedNewGroup,ProfileReviewComments,FavoriteSubCategory,GroupChat,RecommendationComments,HideFeed,UserVideos,LikeUserVideos,ProfileReviewLike, LikeUserPhotos,UserPhotos, ProfileReviewRequest,token_required, FriendRequest, User, DateRequest, TagFriends, \
     ChatMute, Notification, Block, TblCountries, TblStates,Follow,Feed,FeedLike,FeedComments,FeedCommentLike,PlacesReviewLike,PlacesReviewCommentLike,PlacesReviewComments,ThingsReviewCommentLike,ThingsReviewComments,ThingsReviewLike,NewNotification,LikeRecommendation
 from base.user.queryset import insert_data, delete_frnd_req
 from base.admin.models import CommentsUserAnswer,LikeUserAnswer,Category, Faqs,ThingsCategory,CategoryQue,CategoryAns,QuestionsCategory,Buttons
@@ -1296,7 +1296,14 @@ def meetup_list(active_user):
         # user_id = request.json.get('user_id')
         per_page = 30
 
-        query = Meetup.query.filter(Meetup.is_show == True)
+        hidden_meetup_ids = db.session.query(HideMeetup.meetup_id).filter(
+            HideMeetup.user_id == active_user.id
+        )
+
+        query = Meetup.query.filter(
+            Meetup.is_show == True,
+            ~Meetup.id.in_(hidden_meetup_ids)
+        )
 
         if search_text:
             query = Meetup.query.filter(
@@ -1365,7 +1372,7 @@ def delete_meetup(active_user):
 @token_required
 def create_meetup(active_user):
     try:
-        data = request.get_json()
+        data = request.form
 
         place = data.get('place')
         city = data.get('city')
@@ -1384,6 +1391,9 @@ def create_meetup(active_user):
         any_time = data.get('any_time')
         any_date = data.get('any_date')
 
+        content = request.files.get('content')
+        content_media_type = data.get('content_type')
+
         if not place:
             return jsonify({'status': 0,'messege': 'Please provide place name'})
         if not address:
@@ -1397,7 +1407,93 @@ def create_meetup(active_user):
         if not description:
             return jsonify({'status': 0,'messege': 'Please provide event description'})
 
-        add_new_meetup = Meetup(any_time=any_time,any_date=any_date,gender=gender,sexuality=sexuality,start_age=start_age,end_age=end_age,city=city,state=state,meetup_date=meetup_date,user_id = active_user.id,place=place,address=address,start_time=start_time,end_time=end_time,description=description,created_time=datetime.utcnow())
+        if not content_media_type in ["image","video"]:
+            return jsonify({"status": 0,"messege": "Invalid media type"})
+
+        image_name = None
+        image_url = None
+
+        video_url = None
+        thumbnail_path = None
+
+        type = 'text'
+
+        if content_media_type == 'image':
+
+            if content and content.filename:
+                type = 'image'
+                image_name = secure_filename(content.filename)
+                extension = os.path.splitext(image_name)[1]
+                extension2 = os.path.splitext(image_name)[1][1:].lower()
+
+                content_type = f'image/{extension2}'
+                x = secrets.token_hex(10)
+
+                image_name = x + extension
+
+                s3_client.upload_fileobj(content, S3_BUCKET, image_name,
+                                         ExtraArgs={'ACL': 'public-read', 'ContentType': content_type})
+                image_url = f"https://{S3_BUCKET}.s3.amazonaws.com/{image_name}"
+
+        elif content_media_type == 'video':
+
+            if content and content.filename:
+                type = 'video'
+                video_name = secure_filename(content.filename)
+                extension = os.path.splitext(video_name)[1]
+                extension2 = os.path.splitext(video_name)[1][1:].lower()
+
+                unique_name = secrets.token_hex(10)
+
+                with tempfile.NamedTemporaryFile(suffix=extension, delete=False) as tmp:
+                    content.save(tmp.name)
+                    # Rewind the file pointer to the beginning of the video file
+                    tmp.seek(0)
+
+                    # Generate a thumbnail for the video
+                    clip = VideoFileClip(tmp.name)
+                    thumbnail_name = f"thumb_{unique_name}.jpg"
+                    clip.save_frame(thumbnail_name, t=1)  # Save the frame at 1 second as the thumbnail
+
+                    # Close the VideoFileClip object
+                    clip.reader.close()
+                    if clip.audio and clip.audio.reader:
+                        clip.audio.reader.close_proc()
+
+                    # Upload the thumbnail to S
+                    with open(thumbnail_name, 'rb') as thumb:
+                        s3_client.upload_fileobj(thumb, S3_BUCKET, thumbnail_name,
+                                                 ExtraArgs={'ACL': 'public-read', 'ContentType': 'image/jpeg'})
+                    thumbnail_path = f"https://{S3_BUCKET}.s3.amazonaws.com/{thumbnail_name}"
+                    print(f'Thumbnail URL: {thumbnail_path}')
+
+                    # Clean up the temporary thumbnail file
+                    os.remove(thumbnail_name)
+
+                # Upload the original post (video or image)
+                content.seek(0)  # Rewind the file pointer to the beginning
+
+                content_type = f'video/{extension2}'
+                x = secrets.token_hex(10)
+
+                video_name = x + extension
+
+                s3_client.upload_fileobj(content, S3_BUCKET, video_name,
+                                         ExtraArgs={'ACL': 'public-read', 'ContentType': content_type})
+                video_url = f"https://{S3_BUCKET}.s3.amazonaws.com/{video_name}"
+
+                # Clean up the temporary video file after uploading
+                try:
+                    os.remove(tmp.name)
+                    print('itssssssssssssssssss successsssssssssssssssssssss')
+                except PermissionError as e:
+                    print(f"Error removing temporary file: {e}")
+                print('video_url', video_url)
+
+        else:
+            type = "text"
+
+        add_new_meetup = Meetup(type=type,thumbnail_path= thumbnail_path,video_path = video_url, image_name=image_name, image_path=image_url,any_time=any_time,any_date=any_date,gender=gender,sexuality=sexuality,start_age=start_age,end_age=end_age,city=city,state=state,meetup_date=meetup_date,user_id = active_user.id,place=place,address=address,start_time=start_time,end_time=end_time,description=description,created_time=datetime.utcnow())
         db.session.add(add_new_meetup)
         db.session.commit()
 
@@ -1406,6 +1502,60 @@ def create_meetup(active_user):
     except Exception as e:
         print('errorrrrrrrrrrrrrrrrr:', str(e))
         return {'status': 0, 'messege': 'Something went wrong'}, 500
+
+@user_view_v5.route('/hide_meetup', methods=['POST'])
+@token_required
+def hide_meetup(active_user):
+    try:
+        data = request.get_json() or {}
+
+        meetup_id = data.get("meetup_id")
+
+        if not meetup_id:
+            return jsonify({'status': 0,'messege': 'Please select post first'})
+
+        get_meetup_data = Meetup.query.get(meetup_id)
+        if not get_meetup_data:
+            return jsonify({'status': 0,'messege': 'Invalid meetup post'})
+
+        add_data = HideMeetup(created_time=datetime.utcnow(),meetup_id=get_meetup_data.id,user_id = active_user.id)
+        db.session.add(add_data)
+        db.session.commit()
+
+        return jsonify({'status': 1,'messege': 'Successfully hided meeetup post'})
+
+    except Exception as e:
+        print('errorrrrrrrrrrrrrrrrr:', str(e))
+        return {'status': 0, 'message': 'Something went wrong'}, 500
+
+@user_view_v5.route('/report_meetup', methods=['POST'])
+@token_required
+def report_meetup(active_user):
+    try:
+        data = request.get_json() or {}
+
+        meetup_id = data.get("meetup_id")
+
+        if not meetup_id:
+            return jsonify({'status': 0,'messege': 'Please select post first'})
+
+        get_meetup_data = Meetup.query.get(meetup_id)
+        if not get_meetup_data:
+            return jsonify({'status': 0,'messege': 'Invalid meetup post'})
+
+        check_data = ReportMeetup.query.filter_by(meetup_id=get_meetup_data.id,user_id = active_user.id).first()
+        if check_data:
+            return jsonify({"status": 0,"messege": "You cannot report again for same post"})
+
+        add_data = ReportMeetup(created_time=datetime.utcnow(),meetup_id=get_meetup_data.id,user_id = active_user.id)
+        db.session.add(add_data)
+        db.session.commit()
+
+        return jsonify({'status': 1,'messege': 'Successfully reported meeetup post'})
+
+    except Exception as e:
+        print('errorrrrrrrrrrrrrrrrr:', str(e))
+        return {'status': 0, 'message': 'Something went wrong'}, 500
 
 @user_view_v5.route('/explore_page', methods=['POST'])
 @token_required

@@ -1118,6 +1118,13 @@ class Meetup(db.Model):
 
     is_show = db.Column(db.Boolean(), default=True)
     created_time = db.Column(db.DateTime, nullable=False)
+
+    image_name = db.Column(db.String(225))
+    image_path = db.Column(db.String(225))
+    video_path = db.Column(db.String(225))
+    thumbnail_path = db.Column(db.String(225))
+    type = db.Column(db.String(225))
+
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE', onupdate='CASCADE'),
                         nullable=False)
     meetup_request_data = db.relationship('MeetupRequest', backref='meetup_request_data')
@@ -1130,6 +1137,8 @@ class Meetup(db.Model):
 
         if self.user_id == active_user_id:
             is_my_meetup = True
+
+        check_reported = ReportMeetup.query.filter_by(user_id = active_user_id,meetup_id=self.id).first()
 
         # meetup_count = MeetupRequest.query.filter_by(meetup_id = self.id).count()
         is_meetup_request = MeetupRequest.query.filter_by(meetup_id=self.id,by_id = active_user_id).first()
@@ -1158,7 +1167,12 @@ class Meetup(db.Model):
             'start_age': self.start_age if self.start_age is not None else '',
             'end_age': self.end_age if self.end_age is not None else '',
             'any_time': self.any_time if self.any_time is not None else '',
-            'any_date': self.any_date if self.any_date is not None else ''
+            'any_date': self.any_date if self.any_date is not None else '',
+            'type': self.type if self.type is not None else "text",
+            'image': self.image_path if self.image_name is not None else "",
+            'video': self.video_path if self.video_path is not None else "",
+            'thumbnail': self.thumbnail_path if self.thumbnail_path is not None else "",
+            "is_reported": bool(check_reported)
         }
 
     def as_dict_notification(self):
@@ -1173,6 +1187,22 @@ class Meetup(db.Model):
             'meetup_date': self.meetup_date,
             'address': self.address if self.address is not None else ''
         }
+
+class HideMeetup(db.Model):
+    id = db.Column(db.Integer, primary_key=True,
+                   autoincrement=True, nullable=False)
+    created_time = db.Column(db.DateTime, nullable=False)
+    meetup_id = db.Column(db.Integer, db.ForeignKey('meetup.id', ondelete='CASCADE', onupdate='CASCADE'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE', onupdate='CASCADE'),
+                        nullable=False)
+
+class ReportMeetup(db.Model):
+    id = db.Column(db.Integer, primary_key=True,
+                   autoincrement=True, nullable=False)
+    created_time = db.Column(db.DateTime, nullable=False)
+    meetup_id = db.Column(db.Integer, db.ForeignKey('meetup.id', ondelete='CASCADE', onupdate='CASCADE'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE', onupdate='CASCADE'),
+                        nullable=False)
 
 class MeetupRequest(db.Model):
     id = db.Column('id', db.Integer, primary_key=True,
