@@ -689,6 +689,7 @@ class Feed(db.Model):
 
     community_type = db.Column(db.String(20))
     community_id = db.Column(db.String(20))
+    community_name = db.Column(db.String(200))
 
     image_name = db.Column('image_name', db.String(225))
     image_path = db.Column('image_path', db.String(225))
@@ -737,7 +738,8 @@ class Feed(db.Model):
             'is_repost': self.is_repost,
             'website_link': self.website_link if self.website_link is not None else '',
             'community_type': self.community_type if self.community_type is not None else '',
-            'community_id': self.community_id if self.community_id is not None else ''
+            'community_id': self.community_id if self.community_id is not None else '',
+            'community_name': self.community_name if self.community_name is not None else ''
 
         }
 

@@ -148,7 +148,7 @@ def share_group(active_user):
 
         text = f"{active_user.fullname} the {community_name} group!"
 
-        add_feed_data = Feed(type="text",feed_type ="feed", community_type=community_type, community_id=community_id, text=text,
+        add_feed_data = Feed(community_name=community_name,type="text",feed_type ="feed", community_type=community_type, community_id=community_id, text=text,
                              created_time=datetime.utcnow(), user_id=active_user.id)
         db.session.add(add_feed_data)
         db.session.commit()
@@ -4963,7 +4963,7 @@ def group_chat_list(active_user):
                         User.deleted == False,
                         User.is_block == False
                     )
-                        .limit(6)
+                        .limit(1)
                         .all()
                 )
 
@@ -5112,7 +5112,7 @@ def group_chat_list(active_user):
                         User.deleted == False,
                         User.is_block == False
                     )
-                        .limit(6)
+                        .limit(1)
                         .all()
                 )
                 get_saved_user_list = []
@@ -6800,7 +6800,7 @@ def feed_page(active_user):
     print('follow_data',follow_data)
 
     if not follow_data:
-        return jsonify({'status':1,'messege': 'First you need to follow someone to see their activity in feed page', 'feed_list': []})
+        return jsonify({'status':1,'messege': '', 'feed_list': []})
 
     followed_list = [ i.to_id for i in follow_data ]
 
@@ -7015,7 +7015,7 @@ def user_feed_page(active_user):
     following_count = query.count()
 
     if not follow_data:
-        return jsonify({'status':1,'messege': 'First you need to follow someone to see their activity in feed page', 'feed_list': [], 'is_friend': is_friend, 'is_follow': is_follow,
+        return jsonify({'status':1,'messege': '', 'feed_list': [], 'is_friend': is_friend, 'is_follow': is_follow,
          'following_count': str(following_count),'show_link': user_link})
 
     is_follow = 1
