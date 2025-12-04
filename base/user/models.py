@@ -122,7 +122,7 @@ class User(db.Model):
     box_10 = db.Column(db.Text)
 
     user_badge = db.Column(db.String(250))
-    notify_gender = db.Column(db.String(50), default='Both')
+    notify_gender = db.Column(db.String(50), default='All')
 
     user_id = db.relationship('Block', backref='users_id')
     save_community_id = db.relationship('SavedCommunity', backref='save_community')

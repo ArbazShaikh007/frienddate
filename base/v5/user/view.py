@@ -146,7 +146,7 @@ def share_group(active_user):
 
             return jsonify({"status": 0,"messege": "Invalid group type"})
 
-        text = f"{active_user.fullname} the {community_name} group!"
+        text = f"{active_user.fullname} shared the {community_name}  group with you! Check it out!"
 
         add_feed_data = Feed(community_name=community_name,type="text",feed_type ="feed", community_type=community_type, community_id=community_id, text=text,
                              created_time=datetime.utcnow(), user_id=active_user.id)
@@ -1031,147 +1031,146 @@ def meetup_notification_list(active_user):
         if not tab:
             return jsonify({'status': 0,'messege': 'Please select tab first'})
 
-        if not int(tab) in [1,2,3,4]:
+        if not int(tab) in [1,2,3]:
             return jsonify({'status': 0,'messege': 'Invalid tab'})
 
-        tab_2_counts = GroupNotification.query.filter_by(to_id=active_user.id,is_read=False).count()
-        tab_3_counts = MeetupRequest.query.filter_by(to_id=active_user.id, is_read=False,is_show=True).count()
-        tab_4_counts = MeetupRequest.query.filter_by(to_id=active_user.id, is_read=False,is_show=False).count()
+        # tab_2_counts = GroupNotification.query.filter_by(to_id=active_user.id,is_read=False).count()
+        tab_2_counts = MeetupRequest.query.filter_by(to_id=active_user.id, is_read=False,is_show=True).count()
+        tab_3_counts = MeetupRequest.query.filter_by(to_id=active_user.id, is_read=False,is_show=False).count()
 
-        if int(tab) in [2,3,4]:
+        if int(tab) in [2, 3]:
 
-            if int(tab) in [3, 4]:
+            check_unread_request = MeetupRequest.query.filter_by(to_id=active_user.id, is_read=False).all()
+            if len(check_unread_request)>0:
+                for i in check_unread_request:
+                    i.is_read = True
+                db.session.commit()
 
-                check_unread_request = MeetupRequest.query.filter_by(to_id=active_user.id, is_read=False).all()
-                if len(check_unread_request)>0:
-                    for i in check_unread_request:
-                        i.is_read = True
-                    db.session.commit()
+            if tab == 3:
 
-                if tab == 3:
-
-                    check_request = MeetupRequest.query.filter_by(to_id=active_user.id,is_show=True).order_by(MeetupRequest.id.desc()).paginate(
+                check_request = MeetupRequest.query.filter_by(to_id=active_user.id,is_show=True).order_by(MeetupRequest.id.desc()).paginate(
                                 page=page,
                                 per_page=per_page,
                                 error_out=False
                             )
-                else:
-                    check_request = MeetupRequest.query.filter_by(to_id=active_user.id,is_show=False).order_by(
+            else:
+                check_request = MeetupRequest.query.filter_by(to_id=active_user.id,is_show=False).order_by(
                         MeetupRequest.id.desc()).paginate(
                         page=page,
                         per_page=per_page,
                         error_out=False
                     )
 
-                request_list = []
+            request_list = []
 
-                if check_request.items:
-                    for i in check_request.items:
-                        meetup_data = i.meetup_request_data.as_dict_notification()
+            if check_request.items:
+                for i in check_request.items:
+                    meetup_data = i.meetup_request_data.as_dict_notification()
 
-                        meetup_data.update(i.as_dict())
-                        request_list.append(meetup_data)
-                pagination_info = {
+                    meetup_data.update(i.as_dict())
+                    request_list.append(meetup_data)
+
+            pagination_info = {
                     "current_page": check_request.page,
                     "has_next": check_request.has_next,
                     "per_page": check_request.per_page,
                     "total_pages": check_request.pages
                 }
 
-                return jsonify({'status': 1,'messege': "Success","tab_2_counts":tab_2_counts,"tab_3_counts": tab_3_counts,"tab_4_counts": tab_4_counts,"request_list":request_list,'pagination_info':pagination_info})
+            return jsonify({'status': 1,'messege': "Success","tab_2_counts":tab_2_counts,"tab_3_counts": tab_3_counts,"tab_4_counts": 0,"request_list":request_list,'pagination_info':pagination_info})
 
-            else:
-                unread_group_post_notification_data = GroupNotification.query.filter_by(to_id=active_user.id,
+        else:
+            unread_group_post_notification_data = GroupNotification.query.filter_by(to_id=active_user.id,
                                                                                         is_read=False).all()
 
-                if len(unread_group_post_notification_data) > 0:
-                    for i in unread_group_post_notification_data:
-                        i.is_read = True
-                    db.session.commit()
+            if len(unread_group_post_notification_data) > 0:
+                for i in unread_group_post_notification_data:
+                    i.is_read = True
+                db.session.commit()
 
-                get_group_post_notification_data = GroupNotification.query.filter(
+            get_group_post_notification_data = GroupNotification.query.filter(
                     GroupNotification.to_id == active_user.id).order_by(GroupNotification.id.desc()).paginate(page=page,
                                                                                                               per_page=per_page,
                                                                                                               error_out=False)
 
-                group_post_notification_list = [i.as_dict() for i in get_group_post_notification_data.items]
+            group_post_notification_list = [i.as_dict() for i in get_group_post_notification_data.items]
 
-                pagination_info = {
+            pagination_info = {
                     "current_page": get_group_post_notification_data.page,
                     "has_next": get_group_post_notification_data.has_next,
                     "per_page": get_group_post_notification_data.per_page,
                     "total_pages": get_group_post_notification_data.pages
                 }
 
-                return jsonify({'status': 1,'messege': "Success","tab_2_counts":tab_2_counts,"tab_3_counts": tab_3_counts,"tab_4_counts": tab_4_counts,"request_list":group_post_notification_list,'pagination_info':pagination_info})
+            return jsonify({'status': 1,'messege': "Success","tab_2_counts":tab_2_counts,"tab_3_counts": tab_3_counts,"tab_4_counts": 0,"request_list":group_post_notification_list,'pagination_info':pagination_info})
 
-        else:
-
-            notification_data = NewNotification.query.filter(NewNotification.to_id == active_user.id).order_by(
-                    NewNotification.id.desc()).paginate(page=page, per_page=per_page, error_out=False)
-
-            has_next = notification_data.has_next  # Check if there is a next page
-            total_pages = notification_data.pages  # Total number of pages
-
-            # Pagination information
-            pagination_info = {
-                "current_page": page,
-                "has_next": has_next,
-                "per_page": per_page,
-                "total_pages": total_pages,
-            }
-
-            notification_list = []
-
-            notification_counts = NewNotification.query.filter_by(to_id=active_user.id, is_read=False).all()
-            if len(notification_counts) > 0:
-                for j in notification_counts:
-                    j.is_read = True
-                    db.session.commit()
-
-            if notification_data.items:
-                for i in notification_data.items:
-                    input_date = datetime.strptime(str(i.created_time), "%Y-%m-%d %H:%M:%S")
-                    output_date = input_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-
-                    notification_data = {
-                        'id': i.id,
-                        'title': i.title,
-                        'message': i.message,
-                        'page': i.page,
-                        'created_time': output_date,
-                        'user_id': i.by_user_notification.id,
-                        'username': i.by_user_notification.fullname,
-                        'user_image': i.by_user_notification.image_path,
-
-                        #static feilds
-
-                        "address": "",
-                        "any_date": "",
-                        "any_time": "",
-                        "city": "",
-                        "description": "",
-                        "end_time": "",
-                        "meetup_date": "",
-                        "place": "",
-                        "start_time": "",
-                        "state": ""
-
-                    }
-                    notification_list.append(notification_data)
-
-                return jsonify({'status': 1, 'messege': 'Success',"tab_2_counts":tab_2_counts,"tab_3_counts": tab_3_counts,"tab_4_counts": tab_4_counts, 'request_list': notification_list,
-                                'pagination_info': pagination_info})
-
-            else:
-                pagination_info = {
-                    "current_page": 1,
-                    "has_next": False,
-                    "per_page": 10,
-                    "total_pages": 1,
-                }
-                return jsonify({'status': 1, 'messege': 'Success', 'request_list': notification_list,
-                                'pagination_info': pagination_info})
+        # else:
+        #
+        #     notification_data = NewNotification.query.filter(NewNotification.to_id == active_user.id).order_by(
+        #             NewNotification.id.desc()).paginate(page=page, per_page=per_page, error_out=False)
+        #
+        #     has_next = notification_data.has_next  # Check if there is a next page
+        #     total_pages = notification_data.pages  # Total number of pages
+        #
+        #     # Pagination information
+        #     pagination_info = {
+        #         "current_page": page,
+        #         "has_next": has_next,
+        #         "per_page": per_page,
+        #         "total_pages": total_pages,
+        #     }
+        #
+        #     notification_list = []
+        #
+        #     notification_counts = NewNotification.query.filter_by(to_id=active_user.id, is_read=False).all()
+        #     if len(notification_counts) > 0:
+        #         for j in notification_counts:
+        #             j.is_read = True
+        #             db.session.commit()
+        #
+        #     if notification_data.items:
+        #         for i in notification_data.items:
+        #             input_date = datetime.strptime(str(i.created_time), "%Y-%m-%d %H:%M:%S")
+        #             output_date = input_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        #
+        #             notification_data = {
+        #                 'id': i.id,
+        #                 'title': i.title,
+        #                 'message': i.message,
+        #                 'page': i.page,
+        #                 'created_time': output_date,
+        #                 'user_id': i.by_user_notification.id,
+        #                 'username': i.by_user_notification.fullname,
+        #                 'user_image': i.by_user_notification.image_path,
+        #
+        #                 #static feilds
+        #
+        #                 "address": "",
+        #                 "any_date": "",
+        #                 "any_time": "",
+        #                 "city": "",
+        #                 "description": "",
+        #                 "end_time": "",
+        #                 "meetup_date": "",
+        #                 "place": "",
+        #                 "start_time": "",
+        #                 "state": ""
+        #
+        #             }
+        #             notification_list.append(notification_data)
+        #
+        #         return jsonify({'status': 1, 'messege': 'Success',"tab_2_counts":tab_2_counts,"tab_3_counts": tab_3_counts,"tab_4_counts": tab_4_counts, 'request_list': notification_list,
+        #                         'pagination_info': pagination_info})
+        #
+        #     else:
+        #         pagination_info = {
+        #             "current_page": 1,
+        #             "has_next": False,
+        #             "per_page": 10,
+        #             "total_pages": 1,
+        #         }
+        #         return jsonify({'status': 1, 'messege': 'Success', 'request_list': notification_list,
+        #                         'pagination_info': pagination_info})
 
     except Exception as e:
         print('errorrrrrrrrrrrrrrrrr:', str(e))
@@ -1406,9 +1405,6 @@ def create_meetup(active_user):
             return jsonify({'status': 0,'messege': 'Please provide meetup date'})
         if not description:
             return jsonify({'status': 0,'messege': 'Please provide event description'})
-
-        if not content_media_type in ["image","video"]:
-            return jsonify({"status": 0,"messege": "Invalid media type"})
 
         image_name = None
         image_url = None
@@ -9630,7 +9626,7 @@ def get_my_buttons_data(active_user):
     # button_data = [i.as_dict() for i in get_button_data]
 
 
-    dont_add = ["Favorites in common","My Info","My Friends","My Followers"]
+    dont_add = ["Favorites in common","My Info","My Friends","My Followers","My Reviews"]
 
     button_data = []
 
