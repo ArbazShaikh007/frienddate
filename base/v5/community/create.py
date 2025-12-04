@@ -814,15 +814,15 @@ def add_places_recommendation(active_user):
     category_id = request.json.get('category_id')
 
     if not community_id:
-        return jsonify({'status':0,'messege': 'Please provide community'})
+        return jsonify({'status': 0, 'messege': 'Please provide community'})
     if not category_id:
-        return jsonify({'status':0,'messege': 'Please provide category'})
-
-    get_community_data = CreatedCommunity.query.get(community_id)
-    if not get_community_data:
-        return jsonify({'status':0,'messege': 'Invalid community'})
+        return jsonify({'status': 0, 'messege': 'Please provide category'})
 
     get_community_data = CreatedCommunity.query.filter_by(id=community_id, category_id=category_id).first()
+    if not get_community_data:
+        return jsonify({'status': 0, 'messege': 'Invalid community'})
+
+    places_category_data = Category.query.get(category_id)
 
     check_recommendation = PlacesRecommendation.query.filter_by(category_id=category_id, user_id=active_user.id,
                                                                 community_id=community_id).first()
@@ -841,7 +841,7 @@ def add_places_recommendation(active_user):
         db.session.add(add_places_recommendation_data)
         db.session.commit()
 
-        text = f'{active_user.fullname} added a new recommendation {get_community_data.community_name} in {places_category_data.category_name} category'
+        text = f'{active_user.fullname} recommended {get_community_data.community_name} from the {places_category_data.category_name} category'
 
         # add_feed_data = Feed(type='text', text=text, image_name=None, image_path=None,
         #                      created_time=datetime.utcnow(), user_id=active_user.id)
@@ -892,7 +892,7 @@ def add_things_recommendation(active_user):
         db.session.add(add_things_recommendation_data)
         db.session.commit()
 
-        text = f'{active_user.fullname} added a new recommendation {get_community_data.community_name} in {things_category_data.category_name} category'
+        text = f'{active_user.fullname} recommended {get_community_data.community_name} from the {things_category_data.category_name} category'
         title =  f'{active_user.fullname} added a recommendation of your word.'
 
         # add_feed_data = Feed(type = 'text',text=text, image_name=None, image_path=None,
