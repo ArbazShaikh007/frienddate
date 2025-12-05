@@ -640,45 +640,49 @@ def create_group_post(active_user):
             db.session.add(add_new_data)
             db.session.commit()
 
-            if active_user.gender is not None:
+            # if active_user.gender is not None:
 
-                remove_users = GroupChatNotificationOnOff.query.filter_by(type =type,places_created_id=community_id).all()
+            remove_users = GroupChatNotificationOnOff.query.filter_by(type=type, places_created_id=community_id).all()
 
-                remove_users_list = [ i.user_id for i in remove_users ]
+            remove_users_list = [i.user_id for i in remove_users]
 
-                get_reciver_users = User.query.filter(User.id.notin_(remove_users_list)).all()
+            get_reciver_users = User.query.filter(User.id.notin_(remove_users_list)).all()
 
-                validate_gender = ["Male","Female","All"]
+            # print('get_reciver_users',get_reciver_users)
 
-                if len(get_reciver_users)>0:
-                    for i in get_reciver_users:
+            validate_gender = ["Male", "Female", "All"]
 
-                        is_notification_sent = False
+            if len(get_reciver_users) > 0:
+                for i in get_reciver_users:
+                    # print('iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii',i)
 
-                        if i.notify_gender in validate_gender:
-                            if active_user.gender == i.notify_gender:
-                                is_notification_sent = True
+                    is_notification_sent = False
 
-                        else:
+                    if i.notify_gender in validate_gender:
+                        if active_user.gender == i.notify_gender or i.notify_gender == 'All':
                             is_notification_sent = True
 
-                        if is_notification_sent == True:
+                    else:
+                        is_notification_sent = True
 
-                            title = 'New frienddate group post'
+                    print('is_notification_sent', is_notification_sent)
 
-                            msg = f'{active_user.fullname} added a new post in the {get_community.community_name} group.'
+                    if is_notification_sent == True:
+                        title = 'New frienddate group post'
 
-                            if i.device_token:
-                                notification = push_notification(device_token=i.device_token, title=title, msg=msg,
-                                                                 image_url=None, device_type=i.device_type)
+                        msg = f'{active_user.fullname} from {get_community.community_name} group wants to meet for a FriendDate'
 
-                            add_notification = GroupNotification(title=title, message=msg, by_id=active_user.id, to_id=i.id,
-                                                               is_read=False, created_time=datetime.utcnow(),community_type = type,community_id=community_id,
-                                                               page='new group post')
-                            db.session.add(add_notification)
-                            db.session.commit()
+                        if i.device_token:
+                            notification = push_notification(device_token=i.device_token, title=title, msg=msg,
+                                                             image_url=None, device_type=i.device_type)
+                        add_notification = GroupNotification(title=title, message=msg, by_id=active_user.id, to_id=i.id,
+                                                             is_read=False, created_time=datetime.utcnow(),
+                                                             community_type=type, community_id=community_id,
+                                                             page='new group post')
+                        db.session.add(add_notification)
+                        db.session.commit()
 
-            return jsonify({'status': 1,'messege': 'Successfully created group post'})
+            return jsonify({'status': 1, 'messege': 'Successfully created group post'})
 
         elif type == "things":
 
@@ -690,48 +694,48 @@ def create_group_post(active_user):
             db.session.add(add_new_data)
             db.session.commit()
 
-            if active_user.gender is not None:
+            # if active_user.gender is not None:
 
-                remove_users = GroupChatNotificationOnOff.query.filter_by(type=type,
-                                                                               things_created_id=community_id).all()
+            remove_users = GroupChatNotificationOnOff.query.filter_by(type=type,
+                                                                          things_created_id=community_id).all()
 
-                remove_users_list = [i.user_id for i in remove_users]
+            remove_users_list = [i.user_id for i in remove_users]
 
-                get_reciver_users = User.query.filter(User.id.notin_(remove_users_list)).all()
+            get_reciver_users = User.query.filter(User.id.notin_(remove_users_list)).all()
 
-                validate_gender = ["Male", "Female", "Other"]
+            validate_gender = ["Male", "Female", "All"]
 
-                if len(get_reciver_users) > 0:
-                    for i in get_reciver_users:
+            if len(get_reciver_users) > 0:
+                for i in get_reciver_users:
 
-                        is_notification_sent = False
+                    is_notification_sent = False
 
-                        if i.notify_gender in validate_gender:
-                            if active_user.gender == i.notify_gender:
-                                is_notification_sent = True
-
-                        else:
+                    if i.notify_gender in validate_gender:
+                        if active_user.gender == i.notify_gender or i.notify_gender == 'All':
                             is_notification_sent = True
 
-                        if is_notification_sent == True:
+                    else:
+                        is_notification_sent = True
 
-                            title = 'New frienddate group post'
+                    if is_notification_sent == True:
 
-                            msg = f'{active_user.fullname} added a new post in the {get_community.community_name} group.'
+                        title = 'New frienddate group post'
 
-                            if i.device_token:
-                                notification = push_notification(device_token=i.device_token, title=title, msg=msg,
+                        msg = f'{active_user.fullname} from {get_community.community_name} group wants to meet for a FriendDate'
+
+                        if i.device_token:
+                            notification = push_notification(device_token=i.device_token, title=title, msg=msg,
                                                                  image_url=None, device_type=i.device_type)
 
-                            add_notification = GroupNotification(title=title, message=msg, by_id=active_user.id,
+                        add_notification = GroupNotification(title=title, message=msg, by_id=active_user.id,
                                                                  to_id=i.id,
                                                                  is_read=False, created_time=datetime.utcnow(),
                                                                  community_type=type, community_id=community_id,
                                                                  page='new group post')
-                            db.session.add(add_notification)
-                            db.session.commit()
+                        db.session.add(add_notification)
+                        db.session.commit()
 
-            return jsonify({'status': 1,'messege': 'Successfully created group post'})
+            return jsonify({'status': 1, 'messege': 'Successfully created group post'})
 
         else:
             return jsonify({'status': 0, 'messege': 'Invalid type'})
@@ -1034,7 +1038,7 @@ def meetup_notification_list(active_user):
         if not int(tab) in [1,2,3]:
             return jsonify({'status': 0,'messege': 'Invalid tab'})
 
-        # tab_2_counts = GroupNotification.query.filter_by(to_id=active_user.id,is_read=False).count()
+        tab_1_counts = GroupNotification.query.filter_by(to_id=active_user.id,is_read=False).count()
         tab_2_counts = MeetupRequest.query.filter_by(to_id=active_user.id, is_read=False,is_show=True).count()
         tab_3_counts = MeetupRequest.query.filter_by(to_id=active_user.id, is_read=False,is_show=False).count()
 
@@ -1077,7 +1081,7 @@ def meetup_notification_list(active_user):
                     "total_pages": check_request.pages
                 }
 
-            return jsonify({'status': 1,'messege': "Success","tab_2_counts":tab_2_counts,"tab_3_counts": tab_3_counts,"tab_4_counts": 0,"request_list":request_list,'pagination_info':pagination_info})
+            return jsonify({'status': 1,'messege': "Success","tab_2_counts":tab_1_counts,"tab_3_counts": tab_2_counts,"tab_4_counts": tab_3_counts,"request_list":request_list,'pagination_info':pagination_info})
 
         else:
             unread_group_post_notification_data = GroupNotification.query.filter_by(to_id=active_user.id,
@@ -1102,7 +1106,7 @@ def meetup_notification_list(active_user):
                     "total_pages": get_group_post_notification_data.pages
                 }
 
-            return jsonify({'status': 1,'messege': "Success","tab_2_counts":tab_2_counts,"tab_3_counts": tab_3_counts,"tab_4_counts": 0,"request_list":group_post_notification_list,'pagination_info':pagination_info})
+            return jsonify({'status': 1,'messege': "Success","tab_2_counts":tab_1_counts,"tab_3_counts": tab_2_counts,"tab_4_counts": tab_3_counts,"request_list":group_post_notification_list,'pagination_info':pagination_info})
 
         # else:
         #
