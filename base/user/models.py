@@ -110,6 +110,10 @@ class User(db.Model):
     saved_looking_for = db.Column(db.String(250))
     is_filter = db.Column(db.Boolean(), default=False)
 
+    is_group_post_notification = db.Column(db.Boolean(), default=True)
+    is_invite_notification = db.Column(db.Boolean(), default=True)
+    is_request_notification = db.Column(db.Boolean(), default=True)
+
     box_1 = db.Column(db.Text)
     box_2 = db.Column(db.Text)
     box_3 = db.Column(db.Text)
@@ -1113,7 +1117,7 @@ class Meetup(db.Model):
     any_time = db.Column(db.String(200))
     any_date = db.Column(db.String(200))
 
-    gender = db.Column(db.String(200))
+    gender = db.Column(db.String(200),default='All')
     sexuality = db.Column(db.String(200))
     start_age = db.Column(db.String(200))
     end_age = db.Column(db.String(200))
@@ -1266,7 +1270,7 @@ class GroupPosts(db.Model):
     address = db.Column(db.String(250))
     time = db.Column(db.String(50))
     date = db.Column(db.String(50))
-    gender = db.Column(db.String(50))
+    gender = db.Column(db.String(50),default="All")
     age_start = db.Column(db.String(50))
     age_end = db.Column(db.String(50))
     looking_for = db.Column(db.String(50))

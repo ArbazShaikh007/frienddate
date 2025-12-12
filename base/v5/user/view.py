@@ -538,6 +538,88 @@ def delete_group_post(active_user):
         print('errorrrrrrrrrrrrrrrrr:', str(e))
         return {'status': 0, 'message': 'Something went wrong'}, 500
 
+
+# live one
+
+# @user_view_v5.route('/group_post_list', methods=['POST'])
+# @token_required
+# def group_post_list(active_user):
+#     try:
+#         community_id = request.json.get('community_id')
+#         type = request.json.get('type')
+#         page = int(request.json.get('page', 1))
+#         per_page = 30
+#
+#         if not community_id:
+#             return jsonify({'status': 0, 'messege': 'Please select word first'})
+#         if not type:
+#             return jsonify({'status': 0, 'messege': 'Community type not found'})
+#
+#         check_gender = [active_user.gender, 'All'] if active_user.gender is not None else ['All']
+#
+#         if active_user.notify_gender is not None and active_user.notify_gender != '' and active_user.notify_gender != 'All':
+#
+#             if type == 'things':
+#                 print('things workingggggggggg')
+#
+#                 get_group_post_data = GroupPosts.query.filter(GroupPosts.type == type,
+#                                                               GroupPosts.things_created_id == community_id,
+#                                                               GroupPosts.gender == active_user.notify_gender).order_by(
+#                     GroupPosts.id.desc()).paginate(page=page,
+#                                                    per_page=per_page,
+#                                                    error_out=False)
+#             elif type == 'places':
+#
+#                 get_group_post_data = GroupPosts.query.filter(GroupPosts.type == type,
+#                                                               GroupPosts.places_created_id == community_id,
+#                                                               GroupPosts.gender == active_user.notify_gender).order_by(
+#                     GroupPosts.id.desc()).paginate(page=page,
+#                                                    per_page=per_page,
+#                                                    error_out=False)
+#
+#             else:
+#                 return jsonify({'status': 0, 'messege': 'Invalid community type'})
+#
+#         else:
+#
+#             if type == 'things':
+#                 print('thingsss workingggggggggg 2222')
+#
+#                 get_group_post_data = GroupPosts.query.filter(GroupPosts.type == type,
+#                                                               GroupPosts.things_created_id == community_id).order_by(
+#                     GroupPosts.id.desc()).paginate(page=page,
+#                                                    per_page=per_page,
+#                                                    error_out=False)
+#
+#             elif type == 'places':
+#
+#                 get_group_post_data = GroupPosts.query.filter(GroupPosts.type == type,
+#                                                               GroupPosts.places_created_id == community_id,
+#                                                               GroupPosts.gender.in_(check_gender)).order_by(
+#                     GroupPosts.id.desc()).paginate(page=page,
+#                                                    per_page=per_page,
+#                                                    error_out=False)
+#
+#             else:
+#                 return jsonify({'status': 0, 'messege': 'Invalid community type'})
+#
+#         group_post_list = [i.as_dict(active_user.id) for i in get_group_post_data.items]
+#
+#         pagination_info = {
+#             "current_page": get_group_post_data.page,
+#             "has_next": get_group_post_data.has_next,
+#             "per_page": get_group_post_data.per_page,
+#             "total_pages": get_group_post_data.pages
+#         }
+#
+#         return jsonify(
+#             {'status': 1, 'messege': 'Success', 'group_post_list': group_post_list, 'pagination_info': pagination_info})
+#
+#
+#     except Exception as e:
+#         print('errorrrrrrrrrrrrrrrrr:', str(e))
+#         return {'status': 0, 'message': 'Something went wrong'}, 500
+
 @user_view_v5.route('/group_post_list', methods=['POST'])
 @token_required
 def group_post_list(active_user):
@@ -552,45 +634,50 @@ def group_post_list(active_user):
         if not type:
             return jsonify({'status': 0,'messege': 'Community type not found'})
 
-        if active_user.notify_gender is not None or active_user.notify_gender != '' or active_user.notify_gender != 'All':
+        check_gender = [active_user.gender,'All'] if active_user.gender is not None else ['All']
 
-            if type == 'things':
+        # if active_user.notify_gender is not None or active_user.notify_gender != '' or active_user.notify_gender != 'All':
+        #
+        #     if type == 'things':
+        #
+        #         get_group_post_data = GroupPosts.query.filter(GroupPosts.type == type,GroupPosts.things_created_id == community_id,GroupPosts.gender==active_user.notify_gender).order_by(GroupPosts.id.desc()).paginate(page=page,
+        #                                                                                    per_page=per_page,
+        #                                                                                    error_out=False)
+        #     elif type == 'places':
+        #
+        #         get_group_post_data = GroupPosts.query.filter(GroupPosts.type == type,
+        #                                                       GroupPosts.places_created_id == community_id,
+        #                                                       GroupPosts.gender == active_user.notify_gender).order_by(
+        #             GroupPosts.id.desc()).paginate(page=page,
+        #                                            per_page=per_page,
+        #                                            error_out=False)
+        #
+        #     else:
+        #         return jsonify({'status': 0,'messege': 'Invalid community type'})
 
-                get_group_post_data = GroupPosts.query.filter(GroupPosts.type == type,GroupPosts.things_created_id == community_id,GroupPosts.gender==active_user.notify_gender).order_by(GroupPosts.id.desc()).paginate(page=page,
-                                                                                           per_page=per_page,
-                                                                                           error_out=False)
-            elif type == 'places':
+        # else:
 
-                get_group_post_data = GroupPosts.query.filter(GroupPosts.type == type,
-                                                              GroupPosts.places_created_id == community_id,
-                                                              GroupPosts.gender == active_user.notify_gender).order_by(
-                    GroupPosts.id.desc()).paginate(page=page,
-                                                   per_page=per_page,
-                                                   error_out=False)
+        if type == 'things':
 
-            else:
-                return jsonify({'status': 0,'messege': 'Invalid community type'})
-
-        else:
-
-            if type == 'things':
-
-                get_group_post_data = GroupPosts.query.filter(GroupPosts.type == type,GroupPosts.things_created_id==community_id).order_by(GroupPosts.id.desc()).paginate(page=page,
+            get_group_post_data = GroupPosts.query.filter(GroupPosts.type == type,GroupPosts.things_created_id==community_id,
+    GroupPosts.gender.in_(check_gender)).order_by(GroupPosts.id.desc()).paginate(page=page,
                                                                                                   per_page=per_page,
                                                                                                   error_out=False)
 
-            elif type == 'places':
+        elif type == 'places':
+            # check_gender = active_user.gender if active_user.gender is not None else 'All'
 
-                get_group_post_data = GroupPosts.query.filter(GroupPosts.type == type,
-                                                              GroupPosts.places_created_id == community_id).order_by(
+            get_group_post_data = GroupPosts.query.filter(GroupPosts.type == type,
+                                                              GroupPosts.places_created_id == community_id,
+    GroupPosts.gender.in_(check_gender)).order_by(
                     GroupPosts.id.desc()).paginate(page=page,
                                                    per_page=per_page,
                                                    error_out=False)
 
-            else:
-                return jsonify({'status': 0,'messege': 'Invalid community type'})
+        else:
+            return jsonify({'status': 0,'messege': 'Invalid community type'})
 
-        group_post_list = [i.as_dict() for i in get_group_post_data.items]
+        group_post_list = [i.as_dict(active_user.id) for i in get_group_post_data.items]
 
         pagination_info = {
             "current_page": get_group_post_data.page,
@@ -630,6 +717,12 @@ def create_group_post(active_user):
         if not type:
             return jsonify({'status': 0,'messege': 'Please give type'})
 
+        validate_gender = ["Male", "Female", "All"]
+
+        if gender:
+            if not gender in validate_gender:
+                return jsonify({'status':0,'message': 'Please select gender Male,Female or All'})
+
         if type == "places":
 
             get_community = CreatedCommunity.query.get(community_id)
@@ -650,8 +743,6 @@ def create_group_post(active_user):
 
             # print('get_reciver_users',get_reciver_users)
 
-            validate_gender = ["Male", "Female", "All"]
-
             if len(get_reciver_users) > 0:
                 for i in get_reciver_users:
                     # print('iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii',i)
@@ -670,7 +761,7 @@ def create_group_post(active_user):
                     if is_notification_sent == True:
                         title = 'New frienddate group post'
 
-                        msg = f'{active_user.fullname} from {get_community.community_name} group wants to meet for a FriendDate'
+                        msg = f'{active_user.fullname} from the {get_community.community_name} group wants to meet for a FriendDate.'
 
                         if i.device_token:
                             notification = push_notification(device_token=i.device_token, title=title, msg=msg,
@@ -702,8 +793,6 @@ def create_group_post(active_user):
             remove_users_list = [i.user_id for i in remove_users]
 
             get_reciver_users = User.query.filter(User.id.notin_(remove_users_list)).all()
-
-            validate_gender = ["Male", "Female", "All"]
 
             if len(get_reciver_users) > 0:
                 for i in get_reciver_users:
@@ -1303,21 +1392,25 @@ def meetup_list(active_user):
             HideMeetup.user_id == active_user.id
         )
 
+        check_gender = [active_user.gender, 'All'] if active_user.gender is not None else ['All']
+
         query = Meetup.query.filter(
             Meetup.is_show == True,
-            ~Meetup.id.in_(hidden_meetup_ids)
+            ~Meetup.id.in_(hidden_meetup_ids),
+            Meetup.gender.in_(check_gender)
         )
 
         if search_text:
             query = Meetup.query.filter(
                 or_(
                     Meetup.place.ilike(f"{search_text}%"),
-                    Meetup.address.ilike(f"{search_text}%")
+                    Meetup.address.ilike(f"{search_text}%"),
+            Meetup.gender.in_(check_gender)
                 )
             )
 
-        if gender:
-            query = query.filter(Meetup.gender == gender)
+        # if gender:
+        #     query = query.filter(Meetup.gender == gender)
 
         if city:
             query = query.filter(Meetup.city.ilike(f"{city}%"))
@@ -4849,258 +4942,592 @@ def group_chat_notify_on_off(active_user):
     else:
         return jsonify({'status': 0,'messege': 'Invalid type'})
 
+# latest code 12_12_2025
+
+# @user_view_v5.route('/group_chat_list', methods=['POST'])
+# @token_required
+# def group_chat_list(active_user):
+#     tab = request.json.get('tab', 0)
+#
+#     if tab is None:
+#         return jsonify({'status': 0, 'messege': 'Please select tab'})
+#
+#     search_text = request.json.get('search_text') if request.json else None
+#     # city = request.json.get('city') if request.json else None
+#     # state = request.json.get('state') if request.json else None
+#
+#     blocked_user_ids = [block.user_id for block in Block.query.filter_by(blocked_user=active_user.id).all()]
+#     blocked_by_user_ids = [block.blocked_user for block in Block.query.filter_by(user_id=active_user.id).all()]
+#
+#     if tab == 1:
+#
+#         included_things_created_ids = db.session.query(SavedThingsCommunity.created_id).filter(
+#             SavedThingsCommunity.user_id == active_user.id, SavedThingsCommunity.is_saved == True
+#         ).subquery()
+#
+#         things_query = db.session.query(
+#             CreatedThingsCommunity.id,
+#             CreatedThingsCommunity.link,
+#             CreatedThingsCommunity.city,
+#             CreatedThingsCommunity.state,
+#             CreatedThingsCommunity.community_name,
+#             CreatedThingsCommunity.category_id,
+#             func.count(SavedThingsCommunity.user_id).label("member_count")
+#         ).join(SavedThingsCommunity, CreatedThingsCommunity.id == SavedThingsCommunity.created_id). \
+#             join(User, SavedThingsCommunity.user_id == User.id). \
+#             filter(
+#             User.deleted == False,
+#             User.is_block == False,
+#             SavedThingsCommunity.user_id.notin_(blocked_user_ids),
+#             SavedThingsCommunity.user_id.notin_(blocked_by_user_ids),
+#             SavedThingsCommunity.created_id.in_(included_things_created_ids),
+#             SavedThingsCommunity.user_id != active_user.id  # exclude current user from count
+#         ).group_by(CreatedThingsCommunity.id)
+#
+#         if search_text:
+#             things_query = things_query.filter(or_(
+#                 CreatedThingsCommunity.community_name.ilike(f"{search_text}%"),
+#                 CreatedThingsCommunity.city.ilike(f"{search_text}%"),
+#                 CreatedThingsCommunity.state.ilike(f"{search_text}%")
+#             ))
+#
+#             # if city:
+#             # things_query = things_query.filter(CreatedThingsCommunity.city.ilike(f"{city}%"))
+#             # if state:
+#             # things_query = things_query.filter(CreatedThingsCommunity.state.ilike(f"{state}%"))
+#
+#         created_things_data = things_query.all()
+#
+#         community_data = []
+#
+#         if len(created_things_data) > 0:
+#             print('created_data.items thingsss', created_things_data)
+#             for id, link, city, state, community_name, category_id, member_count in created_things_data:
+#
+#                 is_highlight = False
+#
+#                 check_visit = VisitGroupComments.query.filter(VisitGroupComments.things_created_id == id,
+#                                                               VisitGroupComments.user_id == active_user.id,
+#                                                               VisitGroupComments.type == 'things').order_by(
+#                     VisitGroupComments.id.desc()).first()
+#
+#                 check_comment = GroupComments.query.filter(GroupComments.things_created_id == id,
+#                                                            GroupComments.type == 'things',
+#                                                            GroupComments.user_id != active_user.id).order_by(
+#                     GroupComments.id.desc()).first()
+#
+#                 check_latest_comment = GroupComments.query.filter(GroupComments.things_created_id == id,
+#                                                                   GroupComments.type == 'things').order_by(
+#                     GroupComments.id.desc()).first()
+#
+#                 latest_comment = ""
+#
+#                 if check_latest_comment:
+#                     latest_comment = check_latest_comment.comment
+#
+#                 if check_comment:
+#                     if not check_visit:
+#                         is_highlight = True
+#
+#                     else:
+#                         if not check_visit.visit_time > check_comment.created_time:
+#                             is_highlight = True
+#
+#                 group_chat_count = GroupChat.query.filter_by(things_created_id=id).count()
+#                 have_recommendation = ThingsRecommendation.query.filter_by(community_id=id,
+#                                                                            user_id=active_user.id).first()
+#                 check_saved = SavedThingsCommunity.query.filter_by(created_id=id, user_id=active_user.id).first()
+#                 check_star = FavoriteSubCategory.query.filter_by(user_id=active_user.id, type='things',
+#                                                                  things_id=id).first()
+#
+#                 check_exists = GroupChatNotificationOnOff.query.filter_by(type="things", things_created_id=id,
+#                                                                           user_id=active_user.id).first()
+#
+#                 is_notify = True
+#
+#                 if check_exists:
+#                     is_notify = False
+#
+#                 category_name = ''
+#                 category_data = ThingsCategory.query.get(category_id)
+#                 if category_data:
+#                     category_name = category_data.category_name
+#
+#                 get_saved_things_users = (
+#                     SavedThingsCommunity.query
+#                         .join(User, SavedThingsCommunity.user_id == User.id)
+#                         .filter(
+#                         SavedThingsCommunity.created_id == id,
+#                         SavedThingsCommunity.category_id == category_id,
+#                         SavedThingsCommunity.user_id != active_user.id,
+#                         ~SavedThingsCommunity.user_id.in_(blocked_user_ids),
+#                         ~SavedThingsCommunity.user_id.in_(blocked_by_user_ids),
+#                         User.deleted == False,
+#                         User.is_block == False
+#                     )
+#                         .limit(1)
+#                         .all()
+#                 )
+#
+#                 get_saved_things_user_list = []
+#
+#                 if len(get_saved_things_users) > 0:
+#                     for j in get_saved_things_users:
+#                         user_dict = {
+#
+#                             'user_id': j.save_things_community.id,
+#                             'username': j.save_things_community.fullname,
+#                             'user_image': j.save_things_community.image_path
+#                         }
+#
+#                         get_saved_things_user_list.append(user_dict)
+#
+#                 dict = {
+#                     'id': id,
+#                     'group_name': community_name,
+#                     'type': 'things',
+#                     'group_chat_count': group_chat_count,
+#                     'member_count': member_count,
+#                     'city': city if city is not None else '',
+#                     'state': state if state is not None else '',
+#                     'category_id': str(category_id),
+#                     'category_name': category_name,
+#                     'members_list': get_saved_things_user_list,
+#                     'is_recommendation': bool(have_recommendation),
+#                     'link': link if link is not None else '',
+#                     'community_id': str(id),
+#                     'is_saved': bool(check_saved),
+#                     'is_star': bool(check_star),
+#                     'is_notify': is_notify,
+#                     'is_highlight': is_highlight,
+#                     'latest_comment': latest_comment
+#                 }
+#
+#                 community_data.append(dict)
+#
+#         all_data = sorted(community_data, key=lambda x: x['member_count'], reverse=True)
+#
+#         return jsonify({'status': 1, 'messege': 'Success', 'chat_list': all_data})
+#
+#     elif tab == 0:
+#
+#         included_places_created_ids = db.session.query(SavedCommunity.created_id).filter(
+#             SavedCommunity.user_id == active_user.id, SavedCommunity.is_saved == True
+#         ).subquery()
+#
+#         places_query = db.session.query(
+#             CreatedCommunity.id,
+#             CreatedCommunity.link,
+#             CreatedCommunity.city,
+#             CreatedCommunity.state,
+#             CreatedCommunity.community_name,
+#             CreatedCommunity.category_id,
+#             func.count(SavedCommunity.user_id).label("member_count")
+#         ).join(SavedCommunity, CreatedCommunity.id == SavedCommunity.created_id). \
+#             join(User, SavedCommunity.user_id == User.id). \
+#             filter(
+#             User.deleted == False,
+#             User.is_block == False,
+#             SavedCommunity.user_id.notin_(blocked_user_ids),
+#             SavedCommunity.user_id.notin_(blocked_by_user_ids),
+#             SavedCommunity.created_id.in_(included_places_created_ids),
+#             SavedCommunity.user_id != active_user.id  # exclude current user from count
+#         ).group_by(CreatedCommunity.id)
+#
+#         if search_text:
+#             places_query = places_query.filter(or_(
+#                 CreatedCommunity.community_name.ilike(f"{search_text}%"),
+#                 CreatedCommunity.city.ilike(f"{search_text}%"),
+#                 CreatedCommunity.state.ilike(f"{search_text}%")
+#             ))
+#             # if city:
+#             # places_query = places_query.filter(CreatedCommunity.city.ilike(f"{city}%"))
+#             # if state:
+#             # places_query = places_query.filter(CreatedCommunity.state.ilike(f"{state}%"))
+#
+#         created_places_data = places_query.all()
+#
+#         community_data = []
+#
+#         if len(created_places_data) > 0:
+#             print('created_data.items placessss', created_places_data)
+#             for id, link, city, state, community_name, category_id, member_count in created_places_data:
+#
+#                 is_highlight = False
+#
+#                 check_visit = VisitGroupComments.query.filter(VisitGroupComments.places_created_id == id,
+#                                                               VisitGroupComments.user_id == active_user.id,
+#                                                               VisitGroupComments.type == 'places').order_by(
+#                     VisitGroupComments.id.desc()).first()
+#
+#                 check_comment = GroupComments.query.filter(GroupComments.places_created_id == id,
+#                                                            GroupComments.type == 'places',
+#                                                            GroupComments.user_id != active_user.id).order_by(
+#                     GroupComments.id.desc()).first()
+#
+#                 check_latest_comment = GroupComments.query.filter(GroupComments.places_created_id == id,
+#                                                                   GroupComments.type == 'places').order_by(
+#                     GroupComments.id.desc()).first()
+#
+#                 latest_comment = ""
+#
+#                 if check_latest_comment:
+#                     latest_comment = check_latest_comment.comment
+#
+#                 if check_comment:
+#                     if not check_visit:
+#                         is_highlight = True
+#
+#                     else:
+#                         if not check_visit.visit_time > check_comment.created_time:
+#                             is_highlight = True
+#
+#                 group_chat_count = GroupChat.query.filter_by(places_created_id=id).count()
+#                 have_recommendation = PlacesRecommendation.query.filter_by(community_id=id,
+#                                                                            user_id=active_user.id).first()
+#                 check_saved = SavedCommunity.query.filter_by(created_id=id, user_id=active_user.id).first()
+#                 check_star = FavoriteSubCategory.query.filter_by(user_id=active_user.id, type='places',
+#                                                                  places_id=id).first()
+#                 check_exists = GroupChatNotificationOnOff.query.filter_by(type="places", places_created_id=id,
+#                                                                           user_id=active_user.id).first()
+#
+#                 is_notify = True
+#
+#                 if check_exists:
+#                     is_notify = False
+#
+#                 category_name = ''
+#                 category_data = Category.query.get(category_id)
+#                 if category_data:
+#                     category_name = category_data.category_name
+#
+#                 get_saved_users = (
+#                     SavedCommunity.query
+#                         .join(User, SavedCommunity.user_id == User.id)
+#                         .filter(
+#                         SavedCommunity.created_id == id,
+#                         SavedCommunity.category_id == category_id,
+#                         SavedCommunity.user_id != active_user.id,
+#                         ~SavedCommunity.user_id.in_(blocked_user_ids),
+#                         ~SavedCommunity.user_id.in_(blocked_by_user_ids),
+#                         User.deleted == False,
+#                         User.is_block == False
+#                     )
+#                         .limit(1)
+#                         .all()
+#                 )
+#                 get_saved_user_list = []
+#
+#                 if len(get_saved_users) > 0:
+#                     for j in get_saved_users:
+#                         user_dict = {
+#
+#                             'user_id': j.save_community.id,
+#                             'username': j.save_community.fullname,
+#                             'user_image': j.save_community.image_path
+#                         }
+#
+#                         get_saved_user_list.append(user_dict)
+#
+#                 dict = {
+#                     'id': id,
+#                     'group_name': community_name,
+#                     'type': 'places',
+#                     'group_chat_count': group_chat_count,
+#                     'member_count': member_count,
+#                     'city': city if city is not None else '',
+#                     'state': state if state is not None else '',
+#                     'category_id': str(category_id),
+#                     'category_name': category_name,
+#                     'members_list': get_saved_user_list,
+#                     'is_recommendation': bool(have_recommendation),
+#                     'link': link if link is not None else '',
+#                     'community_id': str(id),
+#                     'is_saved': bool(check_saved),
+#                     'is_star': bool(check_star),
+#                     'is_notify': is_notify,
+#                     'is_highlight': is_highlight,
+#                     'latest_comment': latest_comment
+#
+#                 }
+#
+#                 community_data.append(dict)
+#
+#         all_data = sorted(community_data, key=lambda x: x['member_count'], reverse=True)
+#
+#         return jsonify({'status': 1, 'messege': 'Success', 'chat_list': all_data})
+#
+#     else:
+#         return jsonify({'status': 0, 'messege': 'Invalid tab'})
+
+
 @user_view_v5.route('/group_chat_list', methods=['POST'])
 @token_required
 def group_chat_list(active_user):
+    data = request.get_json()
 
-    tab = request.json.get('tab',0)
+    page = int(data.get('page', 1))
+    per_page = 30
 
     search_text = request.json.get('search_text') if request.json else None
+
     # city = request.json.get('city') if request.json else None
     # state = request.json.get('state') if request.json else None
 
     blocked_user_ids = [block.user_id for block in Block.query.filter_by(blocked_user=active_user.id).all()]
     blocked_by_user_ids = [block.blocked_user for block in Block.query.filter_by(user_id=active_user.id).all()]
 
-    if tab == 1:
+    # if tab == 1:
+    #
+    #     included_things_created_ids = db.session.query(SavedThingsCommunity.created_id).filter(
+    #         SavedThingsCommunity.user_id == active_user.id, SavedThingsCommunity.is_saved == True
+    #     ).subquery()
+    #
+    #     things_query = db.session.query(
+    #         CreatedThingsCommunity.id,
+    #         CreatedThingsCommunity.link,
+    #         CreatedThingsCommunity.city,
+    #         CreatedThingsCommunity.state,
+    #         CreatedThingsCommunity.community_name,
+    #         CreatedThingsCommunity.category_id,
+    #         func.count(SavedThingsCommunity.user_id).label("member_count")
+    #     ).join(SavedThingsCommunity, CreatedThingsCommunity.id == SavedThingsCommunity.created_id). \
+    #         join(User, SavedThingsCommunity.user_id == User.id). \
+    #         filter(
+    #         User.deleted == False,
+    #         User.is_block == False,
+    #         SavedThingsCommunity.user_id.notin_(blocked_user_ids),
+    #         SavedThingsCommunity.user_id.notin_(blocked_by_user_ids),
+    #         SavedThingsCommunity.created_id.in_(included_things_created_ids),
+    #         SavedThingsCommunity.user_id != active_user.id  # exclude current user from count
+    #     ).group_by(CreatedThingsCommunity.id)
+    #
+    #     if search_text:
+    #         things_query = things_query.filter(or_(
+    #             CreatedThingsCommunity.community_name.ilike(f"{search_text}%"),
+    #             CreatedThingsCommunity.city.ilike(f"{search_text}%"),
+    #             CreatedThingsCommunity.state.ilike(f"{search_text}%")
+    #         ))
+    #
+    #         # if city:
+    #         # things_query = things_query.filter(CreatedThingsCommunity.city.ilike(f"{city}%"))
+    #         # if state:
+    #         # things_query = things_query.filter(CreatedThingsCommunity.state.ilike(f"{state}%"))
+    #
+    #     created_things_data = things_query.all()
+    #
+    #     community_data = []
+    #
+    #     if len(created_things_data) > 0:
+    #         print('created_data.items thingsss', created_things_data)
+    #         for id, link, city, state, community_name, category_id, member_count in created_things_data:
+    #
+    #             is_highlight = False
+    #
+    #             check_visit = VisitGroupComments.query.filter(VisitGroupComments.things_created_id == id,
+    #                                                           VisitGroupComments.user_id == active_user.id,
+    #                                                           VisitGroupComments.type == 'things').order_by(
+    #                 VisitGroupComments.id.desc()).first()
+    #
+    #             check_comment = GroupComments.query.filter(GroupComments.things_created_id == id,
+    #                                                        GroupComments.type == 'things',
+    #                                                        GroupComments.user_id != active_user.id).order_by(
+    #                 GroupComments.id.desc()).first()
+    #
+    #             check_latest_comment = GroupComments.query.filter(GroupComments.things_created_id == id,
+    #                                                               GroupComments.type == 'things').order_by(
+    #                 GroupComments.id.desc()).first()
+    #
+    #             latest_comment = ""
+    #
+    #             if check_latest_comment:
+    #                 latest_comment = check_latest_comment.comment
+    #
+    #             if check_comment:
+    #                 if not check_visit:
+    #                     is_highlight = True
+    #
+    #                 else:
+    #                     if not check_visit.visit_time > check_comment.created_time:
+    #                         is_highlight = True
+    #
+    #             group_chat_count = GroupChat.query.filter_by(things_created_id=id).count()
+    #             have_recommendation = ThingsRecommendation.query.filter_by(community_id=id,
+    #                                                                        user_id=active_user.id).first()
+    #             check_saved = SavedThingsCommunity.query.filter_by(created_id=id, user_id=active_user.id).first()
+    #             check_star = FavoriteSubCategory.query.filter_by(user_id=active_user.id, type='things',
+    #                                                              things_id=id).first()
+    #
+    #             check_exists = GroupChatNotificationOnOff.query.filter_by(type="things", things_created_id=id,
+    #                                                                       user_id=active_user.id).first()
+    #
+    #             is_notify = True
+    #
+    #             if check_exists:
+    #                 is_notify = False
+    #
+    #             category_name = ''
+    #             category_data = ThingsCategory.query.get(category_id)
+    #             if category_data:
+    #                 category_name = category_data.category_name
+    #
+    #             get_saved_things_users = (
+    #                 SavedThingsCommunity.query
+    #                     .join(User, SavedThingsCommunity.user_id == User.id)
+    #                     .filter(
+    #                     SavedThingsCommunity.created_id == id,
+    #                     SavedThingsCommunity.category_id == category_id,
+    #                     SavedThingsCommunity.user_id != active_user.id,
+    #                     ~SavedThingsCommunity.user_id.in_(blocked_user_ids),
+    #                     ~SavedThingsCommunity.user_id.in_(blocked_by_user_ids),
+    #                     User.deleted == False,
+    #                     User.is_block == False
+    #                 )
+    #                     .limit(1)
+    #                     .all()
+    #             )
+    #
+    #             get_saved_things_user_list = []
+    #
+    #             if len(get_saved_things_users) > 0:
+    #                 for j in get_saved_things_users:
+    #                     user_dict = {
+    #
+    #                         'user_id': j.save_things_community.id,
+    #                         'username': j.save_things_community.fullname,
+    #                         'user_image': j.save_things_community.image_path
+    #                     }
+    #
+    #                     get_saved_things_user_list.append(user_dict)
+    #
+    #             dict = {
+    #                 'id': id,
+    #                 'group_name': community_name,
+    #                 'type': 'things',
+    #                 'group_chat_count': group_chat_count,
+    #                 'member_count': member_count,
+    #                 'city': city if city is not None else '',
+    #                 'state': state if state is not None else '',
+    #                 'category_id': str(category_id),
+    #                 'category_name': category_name,
+    #                 'members_list': get_saved_things_user_list,
+    #                 'is_recommendation': bool(have_recommendation),
+    #                 'link': link if link is not None else '',
+    #                 'community_id': str(id),
+    #                 'is_saved': bool(check_saved),
+    #                 'is_star': bool(check_star),
+    #                 'is_notify': is_notify,
+    #                 'is_highlight': is_highlight,
+    #                 'latest_comment': latest_comment
+    #             }
+    #
+    #             community_data.append(dict)
+    #
+    #     all_data = sorted(community_data, key=lambda x: x['member_count'], reverse=True)
+    #
+    #     return jsonify({'status': 1, 'messege': 'Success', 'chat_list': all_data})
 
-        included_things_created_ids = db.session.query(SavedThingsCommunity.created_id).filter(
-            SavedThingsCommunity.user_id == active_user.id, SavedThingsCommunity.is_saved == True
-        ).subquery()
 
-        things_query = db.session.query(
-            CreatedThingsCommunity.id,
-            CreatedThingsCommunity.link,
-            CreatedThingsCommunity.city,
-            CreatedThingsCommunity.state,
-            CreatedThingsCommunity.community_name,
-            CreatedThingsCommunity.category_id,
-            func.count(SavedThingsCommunity.user_id).label("member_count")
-        ).join(SavedThingsCommunity, CreatedThingsCommunity.id == SavedThingsCommunity.created_id). \
-            join(User, SavedThingsCommunity.user_id == User.id). \
-            filter(
-            User.deleted == False,
-            User.is_block == False,
-            SavedThingsCommunity.user_id.notin_(blocked_user_ids),
-            SavedThingsCommunity.user_id.notin_(blocked_by_user_ids),
-            SavedThingsCommunity.created_id.in_(included_things_created_ids),
-            SavedThingsCommunity.user_id != active_user.id  # exclude current user from count
-        ).group_by(CreatedThingsCommunity.id)
-
-        if search_text:
-            things_query = things_query.filter(or_(
-                CreatedThingsCommunity.community_name.ilike(f"{search_text}%"),
-                CreatedThingsCommunity.city.ilike(f"{search_text}%"),
-                CreatedThingsCommunity.state.ilike(f"{search_text}%")
-            ))
-
-            # if city:
-            # things_query = things_query.filter(CreatedThingsCommunity.city.ilike(f"{city}%"))
-            # if state:
-            # things_query = things_query.filter(CreatedThingsCommunity.state.ilike(f"{state}%"))
-
-        created_things_data = things_query.all()
-
-        community_data = []
-
-        if len(created_things_data) > 0:
-            print('created_data.items thingsss', created_things_data)
-            for id, link, city, state, community_name, category_id, member_count in created_things_data:
-
-                is_highlight = False
-
-                check_visit = VisitGroupComments.query.filter(VisitGroupComments.things_created_id == id,
-                                                              VisitGroupComments.user_id == active_user.id,
-                                                              VisitGroupComments.type == 'things').order_by(VisitGroupComments.id.desc()).first()
-
-                check_comment = GroupComments.query.filter(GroupComments.things_created_id==id,GroupComments.type == 'things',GroupComments.user_id!=active_user.id).order_by(GroupComments.id.desc()).first()
-
-                check_latest_comment = GroupComments.query.filter(GroupComments.things_created_id==id,GroupComments.type == 'things').order_by(GroupComments.id.desc()).first()
-
-                latest_comment = ""
-
-                if check_latest_comment:
-                    latest_comment = check_latest_comment.comment
-
-                if check_comment:
-
-                    if not check_visit:
-                        is_highlight = True
-
-                    else:
-                        if not check_visit.visit_time > check_comment.created_time:
-                            is_highlight = True
-
-
-                group_chat_count = GroupChat.query.filter_by(things_created_id=id).count()
-                have_recommendation = ThingsRecommendation.query.filter_by(community_id=id,
-                                                                           user_id=active_user.id).first()
-                check_saved = SavedThingsCommunity.query.filter_by(created_id=id, user_id=active_user.id).first()
-                check_star = FavoriteSubCategory.query.filter_by(user_id=active_user.id, type='things',
-                                                                 things_id=id).first()
-
-                check_exists = GroupChatNotificationOnOff.query.filter_by(type="things", things_created_id=id,
-                                                                          user_id=active_user.id).first()
-                is_notify = True
-
-                if check_exists:
-                    is_notify = False
-
-                category_name = ''
-                category_data = ThingsCategory.query.get(category_id)
-                if category_data:
-                    category_name = category_data.category_name
-
-                get_saved_things_users = (
-                    SavedThingsCommunity.query
-                        .join(User, SavedThingsCommunity.user_id == User.id)
-                        .filter(
-                        SavedThingsCommunity.created_id == id,
-                        SavedThingsCommunity.category_id == category_id,
-                        SavedThingsCommunity.user_id != active_user.id,
-                        ~SavedThingsCommunity.user_id.in_(blocked_user_ids),
-                        ~SavedThingsCommunity.user_id.in_(blocked_by_user_ids),
-                        User.deleted == False,
-                        User.is_block == False
-                    )
-                        .limit(1)
-                        .all()
-                )
-
-                get_saved_things_user_list = []
-
-                if len(get_saved_things_users) > 0:
-                    for j in get_saved_things_users:
-                        user_dict = {
-
-                            'user_id': j.save_things_community.id,
-                            'username': j.save_things_community.fullname,
-                            'user_image': j.save_things_community.image_path
-                        }
-
-                        get_saved_things_user_list.append(user_dict)
-
-                dict = {
-                    'id': id,
-                    'group_name': community_name,
-                    'type': 'things',
-                    'group_chat_count': group_chat_count,
-                    'member_count': member_count,
-                    'city': city if city is not None else '',
-                    'state': state if state is not None else '',
-                    'category_id': str(category_id),
-                    'category_name': category_name,
-                    'members_list': get_saved_things_user_list,
-                    'is_recommendation': bool(have_recommendation),
-                    'link': link if link is not None else '',
-                    'community_id': str(id),
-                    'is_saved': bool(check_saved),
-                    'is_star': bool(check_star),
-                    'is_notify': is_notify,
-                    'is_highlight':is_highlight,
-                    'latest_comment': latest_comment
-                }
-
-                community_data.append(dict)
-
-        all_data = sorted(community_data, key=lambda x: x['member_count'], reverse=True)
-
-        return jsonify({'status': 1, 'messege': 'Success', 'chat_list': all_data})
-
-    elif tab == 0:
-
-        included_places_created_ids = db.session.query(SavedCommunity.created_id).filter(
+    included_places_created_ids = db.session.query(SavedCommunity.created_id).filter(
             SavedCommunity.user_id == active_user.id, SavedCommunity.is_saved == True
         ).subquery()
 
-        places_query = db.session.query(
-            CreatedCommunity.id,
-            CreatedCommunity.link,
-            CreatedCommunity.city,
-            CreatedCommunity.state,
-            CreatedCommunity.community_name,
-            CreatedCommunity.category_id,
-            func.count(SavedCommunity.user_id).label("member_count")
-        ).join(SavedCommunity, CreatedCommunity.id == SavedCommunity.created_id). \
-            join(User, SavedCommunity.user_id == User.id). \
-            filter(
-            # User.deleted == False,
-            # User.is_block == False,
-            # SavedCommunity.user_id.notin_(blocked_user_ids),
-            # SavedCommunity.user_id.notin_(blocked_by_user_ids),
-            SavedCommunity.created_id.in_(included_places_created_ids),
-            SavedCommunity.user_id != active_user.id  # exclude current user from count
-        ).group_by(CreatedCommunity.id)
+    places_query = db.session.query(
+        CreatedCommunity.id,
+        CreatedCommunity.link,
+        CreatedCommunity.city,
+        CreatedCommunity.state,
+        CreatedCommunity.community_name,
+        CreatedCommunity.category_id,
+        func.count(SavedCommunity.user_id).label("member_count")
+    ).join(SavedCommunity, CreatedCommunity.id == SavedCommunity.created_id). \
+        join(User, SavedCommunity.user_id == User.id). \
+        filter(
+        User.deleted == False,
+        User.is_block == False,
+        SavedCommunity.user_id.notin_(blocked_user_ids),
+        SavedCommunity.user_id.notin_(blocked_by_user_ids),
+        SavedCommunity.created_id.in_(included_places_created_ids),
+        SavedCommunity.user_id != active_user.id  # exclude current user from count
+    ).group_by(CreatedCommunity.id).order_by(func.count(SavedCommunity.user_id).desc())
 
-        if search_text:
-            places_query = places_query.filter(or_(
+    if search_text:
+        places_query = places_query.filter(or_(
                 CreatedCommunity.community_name.ilike(f"{search_text}%"),
                 CreatedCommunity.city.ilike(f"{search_text}%"),
                 CreatedCommunity.state.ilike(f"{search_text}%")
             ))
-            # if city:
-            # places_query = places_query.filter(CreatedCommunity.city.ilike(f"{city}%"))
-            # if state:
-            # places_query = places_query.filter(CreatedCommunity.state.ilike(f"{state}%"))
+    # if city:
+    # places_query = places_query.filter(CreatedCommunity.city.ilike(f"{city}%"))
+    # if state:
+    # places_query = places_query.filter(CreatedCommunity.state.ilike(f"{state}%"))
 
-        created_places_data = places_query.all()
+    created_places_data = places_query.paginate(page=page, per_page=per_page,error_out=False)
 
+    has_next = created_places_data.has_next
+    total_pages = created_places_data.pages
 
-        community_data = []
+    pagination_info = {
+        "current_page": page,
+        "has_next": has_next,
+        "per_page": per_page,
+        "total_pages": total_pages,
+    }
 
-        if len(created_places_data) > 0:
-            print('created_data.items placessss', created_places_data)
-            for id, link, city, state, community_name, category_id, member_count in created_places_data:
+    community_data = []
 
-                is_highlight = False
+    if created_places_data.items:
+        for id, link, city, state, community_name, category_id, member_count in created_places_data.items:
 
-                check_visit = VisitGroupComments.query.filter(VisitGroupComments.places_created_id == id,
+            is_highlight = False
+
+            check_visit = VisitGroupComments.query.filter(VisitGroupComments.places_created_id == id,
                                                               VisitGroupComments.user_id == active_user.id,
                                                               VisitGroupComments.type == 'places').order_by(
-                    VisitGroupComments.id.desc()).first()
+                VisitGroupComments.id.desc()).first()
 
-                check_comment = GroupComments.query.filter(GroupComments.places_created_id == id,
+            check_comment = GroupComments.query.filter(GroupComments.places_created_id == id,
                                                            GroupComments.type == 'places',
                                                            GroupComments.user_id != active_user.id).order_by(
-                    GroupComments.id.desc()).first()
+                GroupComments.id.desc()).first()
 
-                check_latest_comment = GroupComments.query.filter(GroupComments.places_created_id == id,
-                                                           GroupComments.type == 'places').order_by(
-                    GroupComments.id.desc()).first()
+            check_latest_comment = GroupComments.query.filter(GroupComments.places_created_id == id,
+                                                                  GroupComments.type == 'places').order_by(
+                GroupComments.id.desc()).first()
 
-                latest_comment = ""
+            latest_comment = ""
 
-                if check_latest_comment:
-                    latest_comment = check_latest_comment.comment
+            if check_latest_comment:
+                latest_comment = check_latest_comment.comment
 
-                if check_comment:
-                    if not check_visit:
+            if check_comment:
+                if not check_visit:
+                    is_highlight = True
+
+                else:
+                    if not check_visit.visit_time > check_comment.created_time:
                         is_highlight = True
 
-                    else:
-                        if not check_visit.visit_time > check_comment.created_time:
-                            is_highlight = True
-
-
-                group_chat_count = GroupChat.query.filter_by(places_created_id=id).count()
-                have_recommendation = PlacesRecommendation.query.filter_by(community_id=id, user_id=active_user.id).first()
-                check_saved = SavedCommunity.query.filter_by(created_id=id, user_id=active_user.id).first()
-                check_star = FavoriteSubCategory.query.filter_by(user_id=active_user.id, type='places',
+            group_chat_count = GroupChat.query.filter_by(places_created_id=id).count()
+            have_recommendation = PlacesRecommendation.query.filter_by(community_id=id,
+                                                                           user_id=active_user.id).first()
+            check_saved = SavedCommunity.query.filter_by(created_id=id, user_id=active_user.id).first()
+            check_star = FavoriteSubCategory.query.filter_by(user_id=active_user.id, type='places',
                                                                  places_id=id).first()
-
-                check_exists = GroupChatNotificationOnOff.query.filter_by(type="places", places_created_id=id,
+            check_exists = GroupChatNotificationOnOff.query.filter_by(type="places", places_created_id=id,
                                                                           user_id=active_user.id).first()
-                is_notify = True
 
-                if check_exists:
-                    is_notify = False
+            is_notify = True
 
-                category_name = ''
-                category_data = Category.query.get(category_id)
-                if category_data:
-                    category_name = category_data.category_name
+            if check_exists:
+                is_notify = False
 
-                get_saved_users = (
+            category_name = ''
+            category_data = Category.query.get(category_id)
+            if category_data:
+                category_name = category_data.category_name
+
+            get_saved_users = (
                     SavedCommunity.query
                         .join(User, SavedCommunity.user_id == User.id)
                         .filter(
@@ -5115,20 +5542,20 @@ def group_chat_list(active_user):
                         .limit(1)
                         .all()
                 )
-                get_saved_user_list = []
+            get_saved_user_list = []
 
-                if len(get_saved_users) > 0:
-                    for j in get_saved_users:
-                        user_dict = {
+            if len(get_saved_users) > 0:
+                for j in get_saved_users:
+                    user_dict = {
 
                             'user_id': j.save_community.id,
                             'username': j.save_community.fullname,
                             'user_image': j.save_community.image_path
                         }
 
-                        get_saved_user_list.append(user_dict)
+                    get_saved_user_list.append(user_dict)
 
-                dict = {
+            dict = {
                     'id': id,
                     'group_name': community_name,
                     'type': 'places',
@@ -5145,18 +5572,191 @@ def group_chat_list(active_user):
                     'is_saved': bool(check_saved),
                     'is_star': bool(check_star),
                     'is_notify': is_notify,
-                    'is_highlight':is_highlight,
+                    'is_highlight': is_highlight,
+                    'latest_comment': latest_comment
+
+                }
+
+            community_data.append(dict)
+
+    # all_data = sorted(community_data, key=lambda x: x['member_count'], reverse=True)
+
+    return jsonify({'status': 1, 'messege': 'Success', 'chat_list': community_data,'pagination_info': pagination_info})
+
+
+@user_view_v5.route('/things_group_chat_list', methods=['POST'])
+@token_required
+def things_group_chat_list(active_user):
+    data = request.get_json()
+
+    page = int(data.get('page', 1))
+    per_page = 30
+
+    search_text = request.json.get('search_text') if request.json else None
+
+    # city = request.json.get('city') if request.json else None
+    # state = request.json.get('state') if request.json else None
+
+    blocked_user_ids = [block.user_id for block in Block.query.filter_by(blocked_user=active_user.id).all()]
+    blocked_by_user_ids = [block.blocked_user for block in Block.query.filter_by(user_id=active_user.id).all()]
+
+
+    included_things_created_ids = db.session.query(SavedThingsCommunity.created_id).filter(
+            SavedThingsCommunity.user_id == active_user.id, SavedThingsCommunity.is_saved == True
+        ).subquery()
+
+    things_query = db.session.query(
+            CreatedThingsCommunity.id,
+            CreatedThingsCommunity.link,
+            CreatedThingsCommunity.city,
+            CreatedThingsCommunity.state,
+            CreatedThingsCommunity.community_name,
+            CreatedThingsCommunity.category_id,
+            func.count(SavedThingsCommunity.user_id).label("member_count")
+        ).join(SavedThingsCommunity, CreatedThingsCommunity.id == SavedThingsCommunity.created_id). \
+            join(User, SavedThingsCommunity.user_id == User.id). \
+            filter(
+            User.deleted == False,
+            User.is_block == False,
+            SavedThingsCommunity.user_id.notin_(blocked_user_ids),
+            SavedThingsCommunity.user_id.notin_(blocked_by_user_ids),
+            SavedThingsCommunity.created_id.in_(included_things_created_ids),
+            SavedThingsCommunity.user_id != active_user.id  # exclude current user from count
+        ).group_by(CreatedThingsCommunity.id).order_by(func.count(SavedThingsCommunity.user_id).desc())
+
+    if search_text:
+        things_query = things_query.filter(or_(
+                CreatedThingsCommunity.community_name.ilike(f"{search_text}%"),
+                CreatedThingsCommunity.city.ilike(f"{search_text}%"),
+                CreatedThingsCommunity.state.ilike(f"{search_text}%")
+            ))
+
+    # if city:
+        # things_query = things_query.filter(CreatedThingsCommunity.city.ilike(f"{city}%"))
+    # if state:
+        # things_query = things_query.filter(CreatedThingsCommunity.state.ilike(f"{state}%"))
+
+    created_things_data = things_query.paginate(page=page, per_page=per_page,error_out=False)
+
+    has_next = created_things_data.has_next
+    total_pages = created_things_data.pages
+
+    pagination_info = {
+        "current_page": page,
+        "has_next": has_next,
+        "per_page": per_page,
+        "total_pages": total_pages,
+    }
+
+    community_data = []
+
+    if created_things_data.items:
+        for id, link, city, state, community_name, category_id, member_count in created_things_data.items:
+
+            is_highlight = False
+
+            check_visit = VisitGroupComments.query.filter(VisitGroupComments.things_created_id == id,
+                                                              VisitGroupComments.user_id == active_user.id,
+                                                              VisitGroupComments.type == 'things').order_by(
+                    VisitGroupComments.id.desc()).first()
+
+            check_comment = GroupComments.query.filter(GroupComments.things_created_id == id,
+                                                           GroupComments.type == 'things',
+                                                           GroupComments.user_id != active_user.id).order_by(
+                    GroupComments.id.desc()).first()
+
+            check_latest_comment = GroupComments.query.filter(GroupComments.things_created_id == id,
+                                                                  GroupComments.type == 'things').order_by(
+                    GroupComments.id.desc()).first()
+
+            latest_comment = ""
+
+            if check_latest_comment:
+                latest_comment = check_latest_comment.comment
+
+            if check_comment:
+                if not check_visit:
+                    is_highlight = True
+
+                else:
+                    if not check_visit.visit_time > check_comment.created_time:
+                        is_highlight = True
+
+            group_chat_count = GroupChat.query.filter_by(things_created_id=id).count()
+            have_recommendation = ThingsRecommendation.query.filter_by(community_id=id,
+                                                                           user_id=active_user.id).first()
+            check_saved = SavedThingsCommunity.query.filter_by(created_id=id, user_id=active_user.id).first()
+            check_star = FavoriteSubCategory.query.filter_by(user_id=active_user.id, type='things',
+                                                                 things_id=id).first()
+
+            check_exists = GroupChatNotificationOnOff.query.filter_by(type="things", things_created_id=id,
+                                                                          user_id=active_user.id).first()
+
+            is_notify = True
+
+            if check_exists:
+                is_notify = False
+
+            category_name = ''
+            category_data = ThingsCategory.query.get(category_id)
+            if category_data:
+                category_name = category_data.category_name
+
+            get_saved_things_users = (
+                    SavedThingsCommunity.query
+                        .join(User, SavedThingsCommunity.user_id == User.id)
+                        .filter(
+                        SavedThingsCommunity.created_id == id,
+                        SavedThingsCommunity.category_id == category_id,
+                        SavedThingsCommunity.user_id != active_user.id,
+                        ~SavedThingsCommunity.user_id.in_(blocked_user_ids),
+                        ~SavedThingsCommunity.user_id.in_(blocked_by_user_ids),
+                        User.deleted == False,
+                        User.is_block == False
+                    )
+                        .limit(1)
+                        .all()
+                )
+
+            get_saved_things_user_list = []
+
+            if len(get_saved_things_users) > 0:
+                for j in get_saved_things_users:
+                    user_dict = {
+
+                            'user_id': j.save_things_community.id,
+                            'username': j.save_things_community.fullname,
+                            'user_image': j.save_things_community.image_path
+                        }
+
+                    get_saved_things_user_list.append(user_dict)
+
+            dict = {
+                    'id': id,
+                    'group_name': community_name,
+                    'type': 'things',
+                    'group_chat_count': group_chat_count,
+                    'member_count': member_count,
+                    'city': city if city is not None else '',
+                    'state': state if state is not None else '',
+                    'category_id': str(category_id),
+                    'category_name': category_name,
+                    'members_list': get_saved_things_user_list,
+                    'is_recommendation': bool(have_recommendation),
+                    'link': link if link is not None else '',
+                    'community_id': str(id),
+                    'is_saved': bool(check_saved),
+                    'is_star': bool(check_star),
+                    'is_notify': is_notify,
+                    'is_highlight': is_highlight,
                     'latest_comment': latest_comment
                 }
 
-                community_data.append(dict)
+            community_data.append(dict)
 
-        all_data = sorted(community_data, key=lambda x: x['member_count'], reverse=True)
+    # all_data = sorted(community_data, key=lambda x: x['member_count'], reverse=True)
 
-        return jsonify({'status': 1, 'messege': 'Success', 'chat_list': all_data})
-
-    else:
-        return jsonify({'status': 0,'messege': 'Invalid tab'})
+    return jsonify({'status': 1, 'messege': 'Success', 'things_chat_list': community_data,'pagination_info': pagination_info})
 
 @user_view_v5.route('/chat_list', methods=['POST'])
 @token_required
