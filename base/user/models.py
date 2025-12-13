@@ -714,6 +714,7 @@ class Feed(db.Model):
     description = db.Column(LONGTEXT)
     event_date = db.Column(db.Date)
     event_time = db.Column(db.String(50))
+    static_text = db.Column(db.String(100))
 
     user_id = db.Column('user_id', db.Integer, db.ForeignKey('user.id', ondelete='CASCADE', onupdate='CASCADE'),
                       nullable=False)

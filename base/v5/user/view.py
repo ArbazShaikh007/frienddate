@@ -153,6 +153,50 @@ def share_group(active_user):
         db.session.add(add_feed_data)
         db.session.commit()
 
+        follower_ids = [
+            f.by_id
+            for f in Follow.query.filter(Follow.to_id == active_user.id).all()
+        ]
+
+        incoming_ids = [
+            fr.by_id
+            for fr in FriendRequest.query.filter_by(
+                to_id=active_user.id, request_status=1
+            ).all()
+        ]
+
+        outgoing_ids = [
+            fr.to_id
+            for fr in FriendRequest.query.filter_by(
+                by_id=active_user.id, request_status=1
+            ).all()
+        ]
+
+        unique_user_ids = list(set(follower_ids + incoming_ids + outgoing_ids))
+
+        users = User.query.filter(
+            User.id.in_(unique_user_ids),
+            User.deleted == False
+        ).all()
+
+        if len(users)>0:
+            for i in users:
+                title = f"{active_user.fullname} shared the {community_name}  group with you"
+
+                msg = f"{active_user.fullname} shared the {community_name}  group with you"
+
+                if i.device_token:
+                    notification = push_notification(device_token=i.device_token, title=title, msg=msg,
+                                                     image_url=None, device_type=i.device_type)
+
+                add_notification = GroupNotification(title=title, message=msg, by_id=active_user.id,
+                                                     to_id=i.id,
+                                                     is_read=False, created_time=datetime.utcnow(),
+                                                     community_type=type, community_id=community_id,
+                                                     page='share group post')
+                db.session.add(add_notification)
+                db.session.commit()
+
         return jsonify({
             "status": 1,
             "messege": "Group shared successfully"
